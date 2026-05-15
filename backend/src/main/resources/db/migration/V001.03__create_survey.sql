@@ -9,13 +9,13 @@ CREATE TABLE survey (
     max_score INT NOT NULL CHECK (max_score > 0),
     estimated_time_sec INT CHECK (estimated_time_sec IS NULL OR estimated_time_sec > 0),
     survey_schema JSONB NOT NULL,
-    created_by UUID REFERENCES admin_account(admin_id),
+    created_by UUID REFERENCES user_account(user_id),
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_by UUID REFERENCES admin_account(admin_id),
+    updated_by UUID REFERENCES user_account(user_id),
     updated_at TIMESTAMPTZ,
-    locked_by UUID REFERENCES admin_account(admin_id),
+    locked_by UUID REFERENCES user_account(user_id),
     locked_at TIMESTAMPTZ,
-    deleted_by UUID REFERENCES admin_account(admin_id),
+    deleted_by UUID REFERENCES user_account(user_id),
     deleted_at TIMESTAMPTZ,
     is_deleted BOOLEAN NOT NULL DEFAULT FALSE
 );
@@ -30,13 +30,13 @@ COMMENT ON COLUMN survey.status IS '조사지 상태 - DRAFT, PUBLISHED, LOCKED,
 COMMENT ON COLUMN survey.max_score IS '조사지 최대 배점 - 문항 배점 합계 제한 기준';
 COMMENT ON COLUMN survey.estimated_time_sec IS '예상 소요 시간, 초 단위';
 COMMENT ON COLUMN survey.survey_schema IS '조사지 전체 구조 JSONB - 중분류, 문항, 선택지, 배점 원본 데이터';
-COMMENT ON COLUMN survey.created_by IS '생성자 관리자 UUID';
+COMMENT ON COLUMN survey.created_by IS '생성자 사용자 UUID';
 COMMENT ON COLUMN survey.created_at IS '생성일시';
-COMMENT ON COLUMN survey.updated_by IS '최종 수정자 관리자 UUID';
+COMMENT ON COLUMN survey.updated_by IS '최종 수정자 사용자 UUID';
 COMMENT ON COLUMN survey.updated_at IS '최종 수정일시';
-COMMENT ON COLUMN survey.locked_by IS '잠금 처리자 관리자 UUID';
+COMMENT ON COLUMN survey.locked_by IS '잠금 처리자 사용자 UUID';
 COMMENT ON COLUMN survey.locked_at IS '잠금 처리일시';
-COMMENT ON COLUMN survey.deleted_by IS '삭제 처리자 관리자 UUID';
+COMMENT ON COLUMN survey.deleted_by IS '삭제 처리자 사용자 UUID';
 COMMENT ON COLUMN survey.deleted_at IS '삭제일시';
 COMMENT ON COLUMN survey.is_deleted IS '논리 삭제 여부';
 

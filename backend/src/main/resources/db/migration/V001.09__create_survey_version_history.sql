@@ -7,7 +7,7 @@ CREATE TABLE survey_version_history (
     before_snapshot JSONB,
     after_snapshot JSONB,
     change_reason TEXT,
-    changed_by UUID REFERENCES admin_account(admin_id),
+    changed_by UUID REFERENCES user_account(user_id),
     changed_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
@@ -19,7 +19,7 @@ COMMENT ON COLUMN survey_version_history.change_type IS '변경 유형';
 COMMENT ON COLUMN survey_version_history.before_snapshot IS '변경 전 조사지 JSONB 스냅샷';
 COMMENT ON COLUMN survey_version_history.after_snapshot IS '변경 후 조사지 JSONB 스냅샷';
 COMMENT ON COLUMN survey_version_history.change_reason IS '변경 사유';
-COMMENT ON COLUMN survey_version_history.changed_by IS '변경 처리 관리자 UUID';
+COMMENT ON COLUMN survey_version_history.changed_by IS '변경 처리 사용자 UUID';
 COMMENT ON COLUMN survey_version_history.changed_at IS '변경 처리일시';
 
 CREATE INDEX ix_survey_version_history_survey_id
