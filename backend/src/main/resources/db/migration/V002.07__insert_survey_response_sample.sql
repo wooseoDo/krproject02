@@ -1,0 +1,15 @@
+INSERT INTO survey_response (
+    response_id,
+    survey_id,
+    user_id,
+    survey_version,
+    survey_title,
+    started_at,
+    submitted_at,
+    elapsed_time_sec,
+    total_score,
+    is_completed
+) VALUES
+    ('019b1000-0000-7000-8000-000000004001', '019b1000-0000-7000-8000-000000001001', '019b1000-0000-7000-8000-000000000101', 1, '직무 스트레스 자가진단 조사지', now() - interval '2 hour', now() - interval '1 hour 52 minute', 480, 22, TRUE),
+    ('019b1000-0000-7000-8000-000000004002', '019b1000-0000-7000-8000-000000001001', '019b1000-0000-7000-8000-000000000102', 1, '직무 스트레스 자가진단 조사지', now() - interval '90 minute', now() - interval '82 minute', 510, 18, TRUE),
+    ('019b1000-0000-7000-8000-000000004003', '019b1000-0000-7000-8000-000000001001', '019b1000-0000-7000-8000-000000000103', 1, '직무 스트레스 자가진단 조사지', now() - interval '60 minute', now() - interval '54 minute', 360, 25, TRUE);
