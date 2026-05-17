@@ -3,6 +3,7 @@ import { loginNormalUser, registerNormalUser } from '../../api/normal/api';
 import { saveAuthenticatedUser } from '../../model/authSession';
 import type { LoginResult, UserLoginPayload } from '../../types/types';
 
+// 일반 사용자 로그인 실패 시 신규 등록을 시도하고 인증 세션을 저장합니다.
 export async function submitNormalUserLogin(payload: UserLoginPayload): Promise<LoginResult> {
   try {
     const user = await loginNormalUser(payload);

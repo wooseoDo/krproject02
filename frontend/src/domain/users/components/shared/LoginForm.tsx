@@ -6,26 +6,40 @@ import {
   type LoginFormErrors,
 } from '../../config/loginFormConfig';
 import { USER_MESSAGES } from '../../constants/messages';
-import type { LoginResult, UserLoginPayload, UserScope } from '../../types/types';
+import type { LoginResult, UserLoginPayload } from '../../types/types';
 
 interface LoginFormProps {
-  scope: UserScope;
+  variant: string;
+  titleId: string;
+  sectionLabel: string;
   title: string;
   description: string;
   submitLabel: string;
+  submittingLabel: string;
+  successPath: string;
+  errorMessage: string;
   onSubmit: (payload: UserLoginPayload) => Promise<LoginResult>;
 }
 
-export function LoginForm({ scope, title, description, submitLabel, onSubmit }: LoginFormProps) {
+// 전달받은 로그인 설정에 따라 공용 로그인 폼 UI와 제출 흐름을 렌더링합니다.
+export function LoginForm({
+  variant,
+  titleId,
+  sectionLabel,
+  title,
+  description,
+  submitLabel,
+  submittingLabel,
+  successPath,
+  errorMessage,
+  onSubmit,
+}: LoginFormProps) {
   const [values, setValues] = useState<UserLoginPayload>(createLoginDefaultValues);
   const [errors, setErrors] = useState<LoginFormErrors>({});
   const [notice, setNotice] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const dashboardPath = scope === 'admin' ? '/admin/dashboard' : '/dashboard';
-  const alternateLoginPath = scope === 'admin' ? '/login' : '/admin/login';
-  const alternateLoginLabel = scope === 'admin' ? '사용자 로그인' : '관리자 로그인';
-
+  // 입력값 검증 후 로그인 요청을 실행하고 성공 시 지정된 경로로 이동합니다.
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -44,21 +58,21 @@ export function LoginForm({ scope, title, description, submitLabel, onSubmit }: 
     try {
       const result = await onSubmit(nextValues);
       setNotice(result.created ? USER_MESSAGES.REGISTERED : USER_MESSAGES.LOGGED_IN);
-      window.history.pushState({}, '', dashboardPath);
+      window.history.pushState({}, '', successPath);
       window.dispatchEvent(new PopStateEvent('popstate'));
     } catch {
-      setNotice(scope === 'admin' ? USER_MESSAGES.ADMIN_LOGIN_ERROR : USER_MESSAGES.NORMAL_LOGIN_ERROR);
+      setNotice(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <main className={`login-shell login-shell--${scope}`}>
-      <section className="login-panel" aria-labelledby={`${scope}-login-title`}>
+    <main className={`login-shell login-shell--${variant}`}>
+      <section className="login-panel" aria-labelledby={titleId}>
         <div className="login-copy">
-          <p className="section-label">{scope === 'admin' ? 'ADMIN ACCESS' : 'USER ACCESS'}</p>
-          <h1 id={`${scope}-login-title`}>{title}</h1>
+          <p className="section-label">{sectionLabel}</p>
+          <h1 id={titleId}>{title}</h1>
           <p>{description}</p>
         </div>
 
@@ -77,10 +91,10 @@ export function LoginForm({ scope, title, description, submitLabel, onSubmit }: 
                 }))
               }
               aria-invalid={Boolean(errors.birthDate)}
-              aria-describedby={errors.birthDate ? `${scope}-birthDate-error` : undefined}
+              aria-describedby={errors.birthDate ? `${titleId}-birthDate-error` : undefined}
             />
             {errors.birthDate && (
-              <small id={`${scope}-birthDate-error`} className="field-error">
+              <small id={`${titleId}-birthDate-error`} className="field-error">
                 {errors.birthDate}
               </small>
             )}
@@ -100,10 +114,10 @@ export function LoginForm({ scope, title, description, submitLabel, onSubmit }: 
                 }))
               }
               aria-invalid={Boolean(errors.password)}
-              aria-describedby={errors.password ? `${scope}-password-error` : undefined}
+              aria-describedby={errors.password ? `${titleId}-password-error` : undefined}
             />
             {errors.password && (
-              <small id={`${scope}-password-error`} className="field-error">
+              <small id={`${titleId}-password-error`} className="field-error">
                 {errors.password}
               </small>
             )}
@@ -112,13 +126,9 @@ export function LoginForm({ scope, title, description, submitLabel, onSubmit }: 
           {notice && <p className="form-notice">{notice}</p>}
 
           <button className="primary-action" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? '확인 중' : submitLabel}
+            {isSubmitting ? submittingLabel : submitLabel}
           </button>
         </form>
-
-        <a className="alternate-link" href={alternateLoginPath}>
-          {alternateLoginLabel}
-        </a>
       </section>
     </main>
   );

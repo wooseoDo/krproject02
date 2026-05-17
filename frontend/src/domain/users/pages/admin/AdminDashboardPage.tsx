@@ -1,8 +1,10 @@
 import { clearAuthenticatedUser, readAuthenticatedUser } from '../../model/authSession';
 
+// 관리자 로그인 이후의 대시보드 화면을 렌더링합니다.
 export default function AdminDashboardPage() {
   const user = readAuthenticatedUser();
 
+  // 인증 세션을 제거하고 관리자 로그인 화면으로 이동합니다.
   const handleLogout = () => {
     clearAuthenticatedUser();
     window.history.pushState({}, '', '/admin/login');
@@ -11,11 +13,6 @@ export default function AdminDashboardPage() {
 
   return (
     <main className="dashboard-shell dashboard-shell--admin">
-      <nav className="dashboard-nav">
-        <a href="/login">사용자 로그인</a>
-        <a href="/admin/login">관리자 로그인</a>
-      </nav>
-
       <section className="dashboard-hero">
         <p className="section-label">ADMIN DASHBOARD</p>
         <h1>관리자 대시보드</h1>
@@ -40,8 +37,8 @@ export default function AdminDashboardPage() {
       <section className="work-panel">
         <h2>운영 요약</h2>
         <div className="status-list">
-          <p>사용자 응답 수집 현황을 연결할 수 있는 관리자용 영역입니다.</p>
-          <p>계정 관리, 설문 버전 관리, 응답 검토 메뉴가 이곳에서 확장됩니다.</p>
+          <p>사용자 응답 수집 현황을 연결할 수 있는 관리자 영역입니다.</p>
+          <p>계정 관리, 설문 버전 관리, 응답 검색 메뉴가 이곳에서 확장됩니다.</p>
         </div>
       </section>
 

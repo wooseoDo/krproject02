@@ -1,8 +1,10 @@
 import { clearAuthenticatedUser, readAuthenticatedUser } from '../../model/authSession';
 
+// 일반 사용자 로그인 이후의 대시보드 화면을 렌더링합니다.
 export default function UserDashboardPage() {
   const user = readAuthenticatedUser();
 
+  // 인증 세션을 제거하고 일반 사용자 로그인 화면으로 이동합니다.
   const handleLogout = () => {
     clearAuthenticatedUser();
     window.history.pushState({}, '', '/login');
@@ -11,11 +13,6 @@ export default function UserDashboardPage() {
 
   return (
     <main className="dashboard-shell">
-      <nav className="dashboard-nav">
-        <a href="/login">사용자 로그인</a>
-        <a href="/admin/login">관리자 로그인</a>
-      </nav>
-
       <section className="dashboard-hero">
         <p className="section-label">USER DASHBOARD</p>
         <h1>사용자 대시보드</h1>
@@ -41,7 +38,7 @@ export default function UserDashboardPage() {
         <h2>오늘의 진행 현황</h2>
         <div className="status-list">
           <p>진행 가능한 설문을 불러올 준비가 되었습니다.</p>
-          <p>응답 내역과 완료 상태 영역을 이곳에 연결하면 됩니다.</p>
+          <p>응답 이력과 완료 상태 영역은 다음 단계에서 연결하면 됩니다.</p>
         </div>
       </section>
 

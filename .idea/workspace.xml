@@ -4,7 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7505a8f7-3e46-4a5e-8ae2-d45475216270" name="Changes" comment="" />
+    <list default="true" id="7505a8f7-3e46-4a5e-8ae2-d45475216270" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/common/api/client/apiClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/common/api/client/apiClient.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/domain/users/api/admin/api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/domain/users/api/admin/api.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/domain/users/api/normal/api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/domain/users/api/normal/api.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/domain/users/components/shared/LoginForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/domain/users/components/shared/LoginForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/domain/users/config/loginFormConfig.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/domain/users/config/loginFormConfig.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/domain/users/constants/messages.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/domain/users/constants/messages.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/domain/users/hooks/admin/useAdminUserLogin.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/domain/users/hooks/admin/useAdminUserLogin.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/domain/users/hooks/normal/useNormalUserLogin.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/domain/users/hooks/normal/useNormalUserLogin.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/domain/users/model/authSession.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/domain/users/model/authSession.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/domain/users/pages/admin/AdminDashboardPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/domain/users/pages/admin/AdminDashboardPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/domain/users/pages/admin/AdminLoginPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/domain/users/pages/admin/AdminLoginPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/domain/users/pages/normal/UserDashboardPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/domain/users/pages/normal/UserDashboardPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/domain/users/pages/normal/UserLoginPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/domain/users/pages/normal/UserLoginPage.tsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -14,6 +30,9 @@
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
     </projectState>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
@@ -27,10 +46,18 @@
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "develop",
+    "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "E:/Dev/krproject02",
+    "last_opened_file_path": "E:/Dev/Kotlin/krproject02",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "E:\\Dev\\Kotlin\\krproject02\\frontend\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -52,6 +79,7 @@
       <updated>1778139439860</updated>
       <workItem from="1778139443892" duration="231000" />
       <workItem from="1778139682209" duration="26000" />
+      <workItem from="1778993893442" duration="1967000" />
     </task>
     <servers />
   </component>
