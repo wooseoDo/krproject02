@@ -1,5 +1,6 @@
 .login-shell,
-.dashboard-shell {
+.dashboard-shell,
+.route-notice-shell {
   min-height: 100svh;
   color: var(--text);
   background:
@@ -14,7 +15,8 @@
   padding: 32px;
 }
 
-.login-panel {
+.login-panel,
+.route-notice-panel {
   width: min(100%, 440px);
   display: grid;
   gap: 28px;
@@ -24,6 +26,22 @@
   background: var(--surface);
   box-shadow: var(--shadow);
   text-align: left;
+}
+
+.route-notice-shell {
+  display: grid;
+  place-items: center;
+  padding: 32px;
+}
+
+.route-notice-panel p {
+  display: block;
+}
+
+.route-notice-panel a {
+  color: var(--accent);
+  font-weight: 700;
+  text-decoration: none;
 }
 
 .login-copy {
