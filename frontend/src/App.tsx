@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react'
-import './App.css'
-import AdminDashboardPage from './domain/users/pages/admin/AdminDashboardPage'
-import AdminLoginPage from './domain/users/pages/admin/AdminLoginPage'
-import UserDashboardPage from './domain/users/pages/normal/UserDashboardPage'
-import UserLoginPage from './domain/users/pages/normal/UserLoginPage'
-import { readAuthenticatedUser } from './domain/users/model/authSession'
+import { useEffect, useState } from 'react';
+import './App.css';
+import AdminSurveyListPage from './domain/surveys/pages/admin/AdminSurveyListPage';
+import SurveyListPage from './domain/surveys/pages/normal/SurveyListPage';
+import AdminDashboardPage from './domain/users/pages/admin/AdminDashboardPage';
+import AdminLoginPage from './domain/users/pages/admin/AdminLoginPage';
+import UserDashboardPage from './domain/users/pages/normal/UserDashboardPage';
+import UserLoginPage from './domain/users/pages/normal/UserLoginPage';
+import { readAuthenticatedUser } from './domain/users/model/authSession';
 
 function ApiRouteNotice() {
   return (
@@ -19,7 +21,7 @@ function ApiRouteNotice() {
         </p>
       </section>
     </main>
-  )
+  );
 }
 
 function NotFoundPage() {
@@ -34,42 +36,52 @@ function NotFoundPage() {
         </p>
       </section>
     </main>
-  )
+  );
 }
 
 function App() {
-  const [path, setPath] = useState(window.location.pathname)
+  const [path, setPath] = useState(window.location.pathname);
 
   useEffect(() => {
-    const handleLocationChange = () => setPath(window.location.pathname)
+    const handleLocationChange = () => setPath(window.location.pathname);
 
-    window.addEventListener('popstate', handleLocationChange)
-    return () => window.removeEventListener('popstate', handleLocationChange)
-  }, [])
+    window.addEventListener('popstate', handleLocationChange);
+    return () => window.removeEventListener('popstate', handleLocationChange);
+  }, []);
 
   if (path === '/' || path === '/login') {
-    return <UserLoginPage />
+    return <UserLoginPage />;
   }
 
   if (path === '/admin/login') {
-    return <AdminLoginPage />
-  }
-
-  if (path === '/admin/dashboard') {
-    const user = readAuthenticatedUser()
-    return user?.scope === 'admin' ? <AdminDashboardPage /> : <AdminLoginPage />
+    return <AdminLoginPage />;
   }
 
   if (path === '/dashboard') {
-    const user = readAuthenticatedUser()
-    return user?.scope === 'normal' ? <UserDashboardPage /> : <UserLoginPage />
+    const user = readAuthenticatedUser();
+    return user?.scope === 'normal' ? <UserDashboardPage /> : <UserLoginPage />;
+  }
+
+  if (path === '/admin/dashboard') {
+    const user = readAuthenticatedUser();
+    return user?.scope === 'admin' ? <AdminDashboardPage /> : <AdminLoginPage />;
+  }
+
+  if (path === '/surveys') {
+    const user = readAuthenticatedUser();
+    return user?.scope === 'normal' ? <SurveyListPage /> : <UserLoginPage />;
+  }
+
+  if (path === '/admin/surveys') {
+    const user = readAuthenticatedUser();
+    return user?.scope === 'admin' ? <AdminSurveyListPage /> : <AdminLoginPage />;
   }
 
   if (path.startsWith('/api/')) {
-    return <ApiRouteNotice />
+    return <ApiRouteNotice />;
   }
 
-  return <NotFoundPage />
+  return <NotFoundPage />;
 }
 
-export default App
+export default App;

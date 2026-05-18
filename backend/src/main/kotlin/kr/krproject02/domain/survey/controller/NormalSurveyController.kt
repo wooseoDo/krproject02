@@ -7,14 +7,14 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-
+import kr.krproject02.common.security.permissions.SurveyPermissions.SURVEY_PAGE_READ
 @RestController
 @RequestMapping("/normal/surveys", "/api/normal/surveys")
 class NormalSurveyController(
     private val normalSurveyService: NormalSurveyService,
 ) : NormalSurveyApi {
     @GetMapping
-    @PreAuthorize("hasAuthority(T(kr.krproject02.common.security.permissions.SurveyPermissions).SURVEY_PAGE_READ)")
+    @PreAuthorize("hasAuthority('$SURVEY_PAGE_READ')")
     override fun getSurveyList(): List<SurveyListItemResponse> =
         normalSurveyService.getSurveyList()
 }

@@ -1,5 +1,6 @@
 .login-shell,
 .dashboard-shell,
+.survey-page-shell,
 .route-notice-shell {
   min-height: 100svh;
   color: var(--text);
@@ -149,6 +150,202 @@
   text-align: left;
 }
 
+.auth-header {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.auth-header__summary,
+.auth-header__nav {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.auth-header__summary span {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.auth-header__summary strong {
+  margin-left: 4px;
+  color: var(--text-h);
+}
+
+.auth-header__nav a,
+.auth-header__nav button {
+  border: 0;
+  border-radius: 6px;
+  padding: 8px 11px;
+  color: var(--text-h);
+  background: var(--field-bg);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.auth-header__nav button {
+  color: #fff;
+  background: var(--ink);
+}
+
+.survey-page-shell {
+  display: grid;
+  align-content: start;
+  gap: 22px;
+  padding: 28px;
+  text-align: left;
+}
+
+.survey-page-header {
+  display: grid;
+  gap: 12px;
+  padding-top: 24px;
+}
+
+.survey-page-header h1 {
+  margin: 0;
+}
+
+.responsive-filter {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  align-items: end;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--surface) 92%, var(--accent) 8%);
+}
+
+.responsive-filter__field {
+  display: grid;
+  gap: 6px;
+  color: var(--text-h);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.responsive-filter input,
+.responsive-filter select {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 11px;
+  color: var(--text-h);
+  background: var(--field-bg);
+}
+
+.filter-reset-button,
+.pagination-bar button {
+  min-height: 40px;
+  border: 0;
+  border-radius: 6px;
+  padding: 0 14px;
+  color: #fff;
+  background: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.filter-reset-button {
+  white-space: nowrap;
+}
+
+.survey-table-section {
+  display: grid;
+  gap: 14px;
+}
+
+.survey-table-summary,
+.pagination-bar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.data-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.data-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.data-table th {
+  color: var(--text-h);
+  font-size: 13px;
+  background: color-mix(in srgb, var(--surface) 86%, var(--accent) 14%);
+}
+
+.data-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.data-table .is-right {
+  text-align: right;
+}
+
+.data-table .is-center {
+  text-align: center;
+}
+
+.data-table__empty,
+.table-state-message {
+  color: var(--text);
+  text-align: center;
+}
+
+.table-state-message {
+  padding: 32px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.table-state-message.is-error {
+  color: var(--danger);
+}
+
+.pagination-bar {
+  justify-content: center;
+}
+
+.pagination-bar button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
 .dashboard-nav {
   display: flex;
   gap: 16px;
@@ -168,11 +365,29 @@
 }
 
 .metric-card,
-.work-panel {
+.work-panel,
+.survey-list-card {
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--surface);
   box-shadow: var(--shadow);
+}
+
+.survey-list-card {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+}
+
+.survey-list-card__header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.survey-list-card__header h2 {
+  margin: 0;
 }
 
 .metric-card {
@@ -225,5 +440,23 @@
 
   .dashboard-grid {
     grid-template-columns: 1fr;
+  }
+
+  .auth-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .responsive-filter {
+    grid-template-columns: 1fr;
+  }
+
+  .survey-list-card__header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .survey-page-shell {
+    padding: 18px;
   }
 }

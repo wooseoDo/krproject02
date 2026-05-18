@@ -33,15 +33,15 @@ async function parseErrorBody(response: Response): Promise<ApiErrorBody | null> 
 }
 
 async function requestJson<TResponse, TPayload>(
-  method: 'POST',
+  method: 'GET' | 'POST',
   url: string,
-  payload: TPayload,
+  payload?: TPayload,
 ): Promise<ApiResponse<TResponse>> {
   // Normalize fetch responses into the same { data } shape used by domain APIs.
   const response = await fetch(url, {
     method,
-    headers: JSON_HEADERS,
-    body: JSON.stringify(payload),
+    headers: payload === undefined ? undefined : JSON_HEADERS,
+    body: payload === undefined ? undefined : JSON.stringify(payload),
   });
 
   if (!response.ok) {
@@ -54,6 +54,10 @@ async function requestJson<TResponse, TPayload>(
 }
 
 export const api = {
+  get<TResponse>(url: string): Promise<ApiResponse<TResponse>> {
+    // Send a JSON GET request and return an Axios-like response object.
+    return requestJson<TResponse, never>('GET', url);
+  },
   post<TResponse, TPayload>(url: string, payload: TPayload): Promise<ApiResponse<TResponse>> {
     // Send a JSON POST request and return an Axios-like response object.
     return requestJson<TResponse, TPayload>('POST', url, payload);
