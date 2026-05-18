@@ -20,7 +20,7 @@ class UserAccountValidatorTest {
 
     @Test
     void rejectsInvalidBirthDate() {
-        assertThatThrownBy(() -> validator.validateRegistration("991332", "4068"))
+        assertThatThrownBy(() -> validator.validateRegistration("991302", "4068"))
             .isInstanceOf(UserException.class)
             .extracting("errorCode")
             .isEqualTo(UserErrorCode.INVALID_BIRTH_DATE);
