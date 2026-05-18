@@ -8,7 +8,7 @@ import kr.krproject02.domain.survey.dto.SurveyListItemResponse
 interface NormalSurveyApi {
     @Operation(
         summary = "일반 사용자 조사지 리스트 조회",
-        description = "일반 사용자 화면에 표시할 조사지 제목, 버전, 상태, 최대점수, 카테고리, 예상 소요 시간, 생성일을 조회합니다.",
+        description = "일반 사용자 화면에 표시할 조사지 목록을 조회합니다. LOCKED, CLOSED 상태의 조사는 노출하지 않습니다.",
     )
     fun getSurveyList(): List<SurveyListItemResponse>
 }

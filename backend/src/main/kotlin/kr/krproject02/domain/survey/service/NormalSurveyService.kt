@@ -1,5 +1,6 @@
 package kr.krproject02.domain.survey.service
 
+import kr.krproject02.domain.survey.constants.SurveyStatus
 import kr.krproject02.domain.survey.dto.SurveyListItemResponse
 import kr.krproject02.domain.survey.mapper.SurveyMapper
 import kr.krproject02.domain.survey.repository.SurveyRepository
@@ -15,7 +16,9 @@ class NormalSurveyService(
     @Transactional(readOnly = true)
     fun getSurveyList(): List<SurveyListItemResponse> {
         normalSurveyValidator.validateListReadable()
-        return surveyRepository.findAllByDeletedFalseOrderByCreatedAtDesc()
+        return surveyRepository.findAllByStatusNotInAndDeletedFalseOrderByCreatedAtDesc(
+            listOf(SurveyStatus.LOCKED, SurveyStatus.CLOSED),
+        )
             .map(SurveyMapper::toListItemResponse)
     }
 }

@@ -52,7 +52,7 @@ open class Survey protected constructor(
     open var description: String? = null,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, length = SurveyConstants.MAX_SURVEY_STATUS_LENGTH)
+    @Column(name = "status", nullable = false)
     @field:Comment("조사지 상태")
     open var status: SurveyStatus = SurveyStatus.DRAFT,
 
@@ -70,11 +70,11 @@ open class Survey protected constructor(
     open var surveySchema: String = "{}",
 
     @Column(name = "locked_by")
-    @field:Comment("잠금 처리자 사용자 UUID")
+    @field:Comment("잠금 처리한 사용자 UUID")
     open var lockedBy: UUID? = null,
 
     @Column(name = "locked_at")
-    @field:Comment("잠금 처리일시")
+    @field:Comment("잠금 처리 일시")
     open var lockedAt: OffsetDateTime? = null,
 ) : SoftDelete() {
     @PrePersist
@@ -82,5 +82,33 @@ open class Survey protected constructor(
         if (surveyId == null) {
             surveyId = UuidV7Utils.generate()
         }
+    }
+
+    fun changeStatus(status: SurveyStatus) {
+        this.status = status
+        lockedAt = if (status == SurveyStatus.LOCKED) OffsetDateTime.now() else null
+        lockedBy = if (status == SurveyStatus.LOCKED) lockedBy else null
+        markUpdated()
+    }
+
+    companion object {
+        fun create(
+            title: String,
+            category: String?,
+            description: String?,
+            status: SurveyStatus,
+            maxScore: Int,
+            estimatedTimeSec: Int?,
+            surveySchema: String,
+        ): Survey =
+            Survey(
+                title = title,
+                category = category,
+                description = description,
+                status = status,
+                maxScore = maxScore,
+                estimatedTimeSec = estimatedTimeSec,
+                surveySchema = surveySchema,
+            )
     }
 }
