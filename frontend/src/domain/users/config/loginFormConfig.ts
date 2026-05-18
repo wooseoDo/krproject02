@@ -1,17 +1,41 @@
+import { z } from 'zod';
+import { LOGIN_FIELD_ERROR_MESSAGES } from '../constants/loginErrors';
+import type { LoginFormErrors } from '../types/errors';
 import type { UserLoginPayload } from '../types/types';
 
-export interface LoginFormErrors {
-  birthDate?: string;
-  password?: string;
+function isValidBirthDate(value: string) {
+  if (!/^\d{6}$/.test(value)) {
+    return false;
+  }
+
+  const yearPrefix = Number(value.slice(0, 2));
+  const month = Number(value.slice(2, 4));
+  const day = Number(value.slice(4, 6));
+  const currentYearPrefix = new Date().getFullYear() % 100;
+  const fullYear = yearPrefix <= currentYearPrefix ? 2000 + yearPrefix : 1900 + yearPrefix;
+  const date = new Date(Date.UTC(fullYear, month - 1, day));
+
+  return (
+    date.getUTCFullYear() === fullYear &&
+    date.getUTCMonth() === month - 1 &&
+    date.getUTCDate() === day
+  );
 }
 
-// 로그인 폼의 초기 입력값을 생성합니다.
+export const loginFormSchema = z.object({
+  birthDate: z
+    .string()
+    .refine(isValidBirthDate, LOGIN_FIELD_ERROR_MESSAGES.BIRTH_DATE_FORMAT),
+  password: z
+    .string()
+    .regex(/^[\x21-\x7E]{4,8}$/, LOGIN_FIELD_ERROR_MESSAGES.PASSWORD_FORMAT),
+});
+
 export const createLoginDefaultValues = (): UserLoginPayload => ({
   birthDate: '',
   password: '',
 });
 
-// 로그인 폼 입력값을 API 요청에 맞는 형식으로 정리합니다.
 export function normalizeLoginPayload(values: UserLoginPayload): UserLoginPayload {
   return {
     birthDate: values.birthDate.replace(/\D/g, '').slice(0, 6),
@@ -19,17 +43,21 @@ export function normalizeLoginPayload(values: UserLoginPayload): UserLoginPayloa
   };
 }
 
-// 로그인 폼 입력값의 형식 오류를 검증합니다.
 export function validateLoginPayload(values: UserLoginPayload): LoginFormErrors {
-  const errors: LoginFormErrors = {};
+  const result = loginFormSchema.safeParse(values);
 
-  if (!/^\d{6}$/.test(values.birthDate)) {
-    errors.birthDate = 'YYMMDD 형식의 숫자 6자리를 입력해 주세요.';
+  if (result.success) {
+    return {};
   }
 
-  if (!/^[\x21-\x7E]{4,8}$/.test(values.password)) {
-    errors.password = '비밀번호는 영문, 숫자, 특수문자 조합 4~8자리입니다.';
-  }
+  // Convert Zod issues into field-level messages consumed by the login form.
+  return result.error.issues.reduce<LoginFormErrors>((errors, issue) => {
+    const field = issue.path[0];
 
-  return errors;
+    if (field === 'birthDate' || field === 'password') {
+      errors[field] = issue.message;
+    }
+
+    return errors;
+  }, {});
 }

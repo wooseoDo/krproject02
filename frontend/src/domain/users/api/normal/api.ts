@@ -1,13 +1,15 @@
-import { postJson } from '../../../../common/api/client/apiClient';
-import { USER_API_URLS } from '../apiUrls';
+import { api } from '../../../../common/api/client/apiClient';
 import type { NormalUserResponse, UserLoginPayload } from '../../types/types';
+import { USER_API_URLS } from '../apiUrls';
 
-// 일반 사용자 로그인 API를 호출합니다.
-export function loginNormalUser(payload: UserLoginPayload): Promise<NormalUserResponse> {
-  return postJson<NormalUserResponse, UserLoginPayload>(USER_API_URLS.NORMAL.LOGIN, payload);
+export async function loginNormalUser(payload: UserLoginPayload): Promise<NormalUserResponse> {
+  // Call the normal user login endpoint and unwrap the response data.
+  const response = await api.post<NormalUserResponse, UserLoginPayload>(USER_API_URLS.NORMAL.LOGIN, payload);
+  return response.data;
 }
 
-// 일반 사용자 신규 등록 API를 호출합니다.
-export function registerNormalUser(payload: UserLoginPayload): Promise<NormalUserResponse> {
-  return postJson<NormalUserResponse, UserLoginPayload>(USER_API_URLS.NORMAL.BASE, payload);
+export async function registerNormalUser(payload: UserLoginPayload): Promise<NormalUserResponse> {
+  // Call the normal user registration endpoint and unwrap the response data.
+  const response = await api.post<NormalUserResponse, UserLoginPayload>(USER_API_URLS.NORMAL.BASE, payload);
+  return response.data;
 }

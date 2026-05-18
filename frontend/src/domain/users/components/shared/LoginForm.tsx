@@ -1,12 +1,12 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type ComponentPropsWithoutRef } from 'react';
 import {
   createLoginDefaultValues,
   normalizeLoginPayload,
   validateLoginPayload,
-  type LoginFormErrors,
 } from '../../config/loginFormConfig';
 import { USER_MESSAGES } from '../../constants/messages';
-import type { LoginResult, UserLoginPayload } from '../../types/types';
+import type { LoginFormErrors } from '../../types/errors';
+import type { LoginSubmitResult, UserLoginPayload } from '../../types/types';
 
 interface LoginFormProps {
   variant: string;
@@ -18,10 +18,11 @@ interface LoginFormProps {
   submittingLabel: string;
   successPath: string;
   errorMessage: string;
-  onSubmit: (payload: UserLoginPayload) => Promise<LoginResult>;
+  onSubmit: (payload: UserLoginPayload) => Promise<LoginSubmitResult>;
 }
 
-// 전달받은 로그인 설정에 따라 공용 로그인 폼 UI와 제출 흐름을 렌더링합니다.
+type FormSubmitHandler = NonNullable<ComponentPropsWithoutRef<'form'>['onSubmit']>;
+
 export function LoginForm({
   variant,
   titleId,
@@ -39,8 +40,7 @@ export function LoginForm({
   const [notice, setNotice] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // 입력값 검증 후 로그인 요청을 실행하고 성공 시 지정된 경로로 이동합니다.
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit: FormSubmitHandler = async (event) => {
     event.preventDefault();
 
     const nextValues = normalizeLoginPayload(values);

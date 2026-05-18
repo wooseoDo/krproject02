@@ -11,22 +11,12 @@ export interface NormalUserResponse {
   createdAt: string;
 }
 
-export interface AdminUserResponse {
-  userId: string | null;
-  birthDate: string;
-  active: boolean;
-  createdAt: string;
-}
+export type AdminUserResponse = NormalUserResponse;
 
-export type AuthenticatedUser = {
+export type AuthSessionUser = NormalUserResponse & {
   scope: UserScope;
-  userId: string | null;
-  birthDate: string;
-  createdAt: string;
-  active?: boolean;
 };
 
-export type LoginResult = {
-  user: AuthenticatedUser;
+export interface LoginSubmitResult {
   created: boolean;
-};
+}
