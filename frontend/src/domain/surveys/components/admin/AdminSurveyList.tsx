@@ -15,6 +15,15 @@ export function AdminSurveyList() {
     window.dispatchEvent(new PopStateEvent('popstate'));
   };
 
+  const handleEdit = (surveyId: string | null) => {
+    if (!surveyId) {
+      return;
+    }
+
+    window.history.pushState({}, '', `/admin/surveys/${surveyId}/edit`);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  };
+
   return (
     <SurveyListView
       title="관리자 조사지 조회"
@@ -40,6 +49,11 @@ export function AdminSurveyList() {
       onFilterChange={list.updateFilter}
       onResetFilters={list.resetFilters}
       onPageChange={list.setPage}
+      renderRowAction={(survey) => (
+        <button type="button" className="table-row-action" onClick={() => handleEdit(survey.surveyId)}>
+          수정
+        </button>
+      )}
     >
       {createOpen && <AdminSurveyCreatePanel onCreated={list.refresh} onCancel={() => setCreateOpen(false)} />}
     </SurveyListView>

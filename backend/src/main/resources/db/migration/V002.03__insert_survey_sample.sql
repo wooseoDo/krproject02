@@ -62,7 +62,7 @@ INSERT INTO survey (
             {
               "questionId": "019b1000-0000-7000-8000-000000003003",
               "sort": 3,
-              "type": "RADIO",
+              "type": "SINGLE_CHOICE",
               "title": "팀 내에서 의견을 편하게 말할 수 있다.",
               "score": 5,
               "options": ["전혀 아니다", "아니다", "보통이다", "그렇다", "매우 그렇다"]
@@ -70,7 +70,7 @@ INSERT INTO survey (
             {
               "questionId": "019b1000-0000-7000-8000-000000003004",
               "sort": 4,
-              "type": "MULTIPLE_CHOICE",
+              "type": "SINGLE_CHOICE",
               "title": "업무 중 가장 스트레스를 주는 관계 요인은 무엇인가?",
               "score": 5,
               "options": ["상사와의 소통", "동료와의 협업", "부서 간 갈등", "고객 응대", "해당 없음"]
@@ -140,7 +140,7 @@ INSERT INTO survey (
             {
               "questionId": "019b1000-0000-7000-8000-000000003012",
               "sort": 2,
-              "type": "RADIO",
+              "type": "SINGLE_CHOICE",
               "title": "주간 학습 계획을 얼마나 자주 지키는 편인가?",
               "score": 5,
               "options": ["거의 안 지킴", "가끔 지킴", "보통", "자주 지킴", "항상 지킴"]

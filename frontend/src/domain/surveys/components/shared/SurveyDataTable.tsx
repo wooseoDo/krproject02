@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { DataTable, type DataTableColumn } from '../../../../common/components/table/DataTable';
 import { SURVEY_STATUS_LABELS } from '../../constants/statusLabels';
 import type { SurveyListItem } from '../../types/types';
@@ -21,54 +22,68 @@ function formatDate(value: string) {
   return new Date(value).toLocaleDateString('ko-KR');
 }
 
-const surveyColumns: DataTableColumn<SurveyListItem>[] = [
-  {
-    id: 'rowNumber',
-    header: '번호',
-    cell: (survey) => survey.rowNumber,
-  },
-  {
-    id: 'title',
-    header: '조사지 제목',
-    cell: (survey) => survey.title,
-  },
-  {
-    id: 'maxScore',
-    header: '최고점수',
-    cell: (survey) => survey.maxScore,
-  },
-  {
-    id: 'estimatedTimeSec',
-    header: '시간',
-    cell: (survey) => formatSeconds(survey.estimatedTimeSec),
-  },
-  {
-    id: 'surveyVersion',
-    header: '버전',
-    cell: (survey) => `v${survey.surveyVersion}`,
-  },
-  {
-    id: 'status',
-    header: '상태',
-    cell: (survey) => SURVEY_STATUS_LABELS[survey.status],
-  },
-  {
-    id: 'createdAt',
-    header: '출시일',
-    cell: (survey) => formatDate(survey.createdAt),
-  },
-];
+function createSurveyColumns(renderRowAction?: (survey: SurveyListItem) => ReactNode): DataTableColumn<SurveyListItem>[] {
+  const columns: DataTableColumn<SurveyListItem>[] = [
+    {
+      id: 'rowNumber',
+      header: '번호',
+      cell: (survey) => survey.rowNumber,
+    },
+    {
+      id: 'title',
+      header: '조사지 제목',
+      cell: (survey) => survey.title,
+    },
+    {
+      id: 'maxScore',
+      header: '최고점수',
+      cell: (survey) => survey.maxScore,
+    },
+    {
+      id: 'estimatedTimeSec',
+      header: '시간',
+      cell: (survey) => formatSeconds(survey.estimatedTimeSec),
+    },
+    {
+      id: 'surveyVersion',
+      header: '버전',
+      cell: (survey) => `v${survey.surveyVersion}`,
+    },
+    {
+      id: 'status',
+      header: '상태',
+      cell: (survey) => SURVEY_STATUS_LABELS[survey.status],
+    },
+    {
+      id: 'createdAt',
+      header: '출시일',
+      cell: (survey) => formatDate(survey.createdAt),
+    },
+  ];
+
+  if (renderRowAction) {
+    columns.push({
+      id: 'actions',
+      header: '작업',
+      cell: (survey) => renderRowAction(survey),
+      align: 'center',
+    });
+  }
+
+  return columns;
+}
 
 interface SurveyDataTableProps {
   data: SurveyListItem[];
   emptyMessage: string;
+  renderRowAction?: (survey: SurveyListItem) => ReactNode;
 }
 
-export function SurveyDataTable({ data, emptyMessage }: SurveyDataTableProps) {
+export function SurveyDataTable({ data, emptyMessage, renderRowAction }: SurveyDataTableProps) {
   return (
     <DataTable
       data={data}
-      columns={surveyColumns}
+      columns={createSurveyColumns(renderRowAction)}
       keyExtractor={(survey) => survey.surveyId ?? `${survey.title}-${survey.surveyVersion}`}
       emptyMessage={emptyMessage}
     />

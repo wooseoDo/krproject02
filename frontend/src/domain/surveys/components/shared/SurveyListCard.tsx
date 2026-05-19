@@ -17,6 +17,7 @@ interface SurveyListCardProps {
   onFilterChange: (key: keyof SurveyListFiltersValue, value: string) => void;
   onResetFilters: () => void;
   onPageChange: (page: number) => void;
+  renderRowAction?: (survey: SurveyListItem) => ReactNode;
 }
 
 export function SurveyListCard({
@@ -32,6 +33,7 @@ export function SurveyListCard({
   onFilterChange,
   onResetFilters,
   onPageChange,
+  renderRowAction,
 }: SurveyListCardProps) {
   return (
     <section className="survey-list-card">
@@ -49,7 +51,9 @@ export function SurveyListCard({
       <div className="survey-table-section">
         {isLoading && <p className="table-state-message">조사지 목록을 불러오는 중입니다.</p>}
         {error && <p className="table-state-message is-error">{SURVEY_MESSAGES.LOAD_ERROR}</p>}
-        {!isLoading && !error && <SurveyDataTable data={pageItems} emptyMessage={SURVEY_MESSAGES.EMPTY} />}
+        {!isLoading && !error && (
+          <SurveyDataTable data={pageItems} emptyMessage={SURVEY_MESSAGES.EMPTY} renderRowAction={renderRowAction} />
+        )}
 
         <div className="pagination-bar">
           <button type="button" disabled={page <= 1} onClick={() => onPageChange(page - 1)}>

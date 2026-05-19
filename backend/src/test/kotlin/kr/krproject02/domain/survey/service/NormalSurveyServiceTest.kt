@@ -8,7 +8,12 @@ import io.mockk.verify
 import kr.krproject02.domain.survey.constants.SurveyStatus
 import kr.krproject02.domain.survey.dto.SurveyListQuery
 import kr.krproject02.domain.survey.repository.SurveyListItemProjection
+import kr.krproject02.domain.survey.repository.SurveyQuestionOptionRepository
+import kr.krproject02.domain.survey.repository.SurveyQuestionRepository
 import kr.krproject02.domain.survey.repository.SurveyRepository
+import kr.krproject02.domain.survey.repository.SurveyResponseAnswerRepository
+import kr.krproject02.domain.survey.repository.SurveyResponseRepository
+import kr.krproject02.domain.survey.repository.SurveySectionRepository
 import kr.krproject02.domain.survey.validation.NormalSurveyValidator
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -18,15 +23,30 @@ import java.util.UUID
 
 class NormalSurveyServiceTest {
     private lateinit var surveyRepository: SurveyRepository
+    private lateinit var surveyResponseRepository: SurveyResponseRepository
+    private lateinit var surveyResponseAnswerRepository: SurveyResponseAnswerRepository
+    private lateinit var surveySectionRepository: SurveySectionRepository
+    private lateinit var surveyQuestionRepository: SurveyQuestionRepository
+    private lateinit var surveyQuestionOptionRepository: SurveyQuestionOptionRepository
     private lateinit var normalSurveyValidator: NormalSurveyValidator
     private lateinit var normalSurveyService: NormalSurveyService
 
     @BeforeEach
     fun setUp() {
         surveyRepository = mockk()
+        surveyResponseRepository = mockk()
+        surveyResponseAnswerRepository = mockk()
+        surveySectionRepository = mockk()
+        surveyQuestionRepository = mockk()
+        surveyQuestionOptionRepository = mockk()
         normalSurveyValidator = mockk()
         normalSurveyService = NormalSurveyService(
             surveyRepository = surveyRepository,
+            surveyResponseRepository = surveyResponseRepository,
+            surveyResponseAnswerRepository = surveyResponseAnswerRepository,
+            surveySectionRepository = surveySectionRepository,
+            surveyQuestionRepository = surveyQuestionRepository,
+            surveyQuestionOptionRepository = surveyQuestionOptionRepository,
             normalSurveyValidator = normalSurveyValidator,
         )
     }

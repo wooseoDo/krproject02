@@ -12,6 +12,15 @@ export function NormalSurveyList() {
     window.dispatchEvent(new PopStateEvent('popstate'));
   };
 
+  const handleParticipate = (surveyId: string | null) => {
+    if (!surveyId) {
+      return;
+    }
+
+    window.history.pushState({}, '', `/surveys/${surveyId}/participate`);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  };
+
   return (
     <SurveyListView
       title="사용자 조사지 조회"
@@ -32,6 +41,11 @@ export function NormalSurveyList() {
       onFilterChange={list.updateFilter}
       onResetFilters={list.resetFilters}
       onPageChange={list.setPage}
+      renderRowAction={(survey) => (
+        <button type="button" className="table-row-action" onClick={() => handleParticipate(survey.surveyId)}>
+          참여
+        </button>
+      )}
     />
   );
 }

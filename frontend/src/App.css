@@ -335,6 +335,22 @@
   text-align: center;
 }
 
+.table-row-action {
+  min-height: 34px;
+  border: 0;
+  border-radius: 6px;
+  padding: 0 14px;
+  color: #fff;
+  background: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+}
+
+.table-row-action:hover {
+  background: var(--accent);
+}
+
 .table-state-message {
   padding: 32px;
   border: 1px solid var(--border);

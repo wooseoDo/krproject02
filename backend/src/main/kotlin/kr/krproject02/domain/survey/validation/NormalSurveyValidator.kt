@@ -10,5 +10,5 @@ class NormalSurveyValidator {
     }
 
     fun canParticipate(status: SurveyStatus): Boolean =
-        status != SurveyStatus.LOCKED && status != SurveyStatus.CLOSED
+        status == SurveyStatus.PUBLISHED
 }

@@ -83,4 +83,34 @@ open class SurveyResponse protected constructor(
             responseId = UuidV7Utils.generate()
         }
     }
+
+    fun complete(
+        elapsedTimeSec: Int,
+        totalScore: BigDecimal,
+    ) {
+        this.elapsedTimeSec = elapsedTimeSec
+        this.totalScore = totalScore
+        submittedAt = DateTimeUtils.nowKorea()
+        completed = true
+    }
+
+    companion object {
+        fun start(
+            surveyId: UUID?,
+            surveyGroupId: UUID?,
+            userId: UUID,
+            surveyVersion: Int,
+            surveyTitle: String,
+        ): SurveyResponse =
+            SurveyResponse(
+                surveyId = surveyId,
+                surveyGroupId = surveyGroupId,
+                userId = userId,
+                surveyVersion = surveyVersion,
+                surveyTitle = surveyTitle,
+                startedAt = DateTimeUtils.nowKorea(),
+                completed = false,
+                deleted = false,
+            )
+    }
 }

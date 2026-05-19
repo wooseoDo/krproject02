@@ -24,6 +24,7 @@ interface SurveyListViewProps {
   onFilterChange: (key: keyof SurveyListFiltersValue, value: string) => void;
   onResetFilters: () => void;
   onPageChange: (page: number) => void;
+  renderRowAction?: (survey: SurveyListItem) => ReactNode;
 }
 
 export function SurveyListView({
@@ -47,6 +48,7 @@ export function SurveyListView({
   onFilterChange,
   onResetFilters,
   onPageChange,
+  renderRowAction,
 }: SurveyListViewProps) {
   return (
     <main className="survey-page-shell">
@@ -77,6 +79,7 @@ export function SurveyListView({
         onFilterChange={onFilterChange}
         onResetFilters={onResetFilters}
         onPageChange={onPageChange}
+        renderRowAction={renderRowAction}
       />
       {children}
     </main>
