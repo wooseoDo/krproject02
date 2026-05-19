@@ -10,14 +10,17 @@ function matchesDateRange(value: string, from: string, to: string) {
   return (from === '' || date >= from) && (to === '' || date <= to);
 }
 
-export function buildSurveyListItems(surveys: SurveyListItemResponse[]): SurveyListItem[] {
-  // Sort by release date descending and assign row numbers from the newest item.
-  return [...surveys]
-    .sort((left, right) => new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime())
-    .map((survey, index) => ({
-      ...survey,
-      rowNumber: index + 1,
-    }));
+export function buildSurveyListItems(
+  surveys: SurveyListItemResponse[],
+  page = 1,
+  pageSize = surveys.length,
+): SurveyListItem[] {
+  // Use the backend sorted page and assign row numbers from the latest survey.
+  const startRowNumber = (page - 1) * pageSize;
+  return surveys.map((survey, index) => ({
+    ...survey,
+    rowNumber: startRowNumber + index + 1,
+  }));
 }
 
 export function filterSurveyListItems(items: SurveyListItem[], filters: SurveyListFilters): SurveyListItem[] {

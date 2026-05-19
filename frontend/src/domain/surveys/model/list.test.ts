@@ -46,11 +46,11 @@ const surveys: SurveyListItemResponse[] = [
 ];
 
 describe('survey list model', () => {
-  it('sorts surveys by latest release date and assigns row numbers', () => {
-    const items = buildSurveyListItems(surveys);
+  it('assigns row numbers from the backend paged order', () => {
+    const items = buildSurveyListItems(surveys, 2, 10);
 
-    expect(items.map((item) => item.title)).toEqual(['세 번째 조사지', '두 번째 조사지', '첫 번째 조사지']);
-    expect(items.map((item) => item.rowNumber)).toEqual([1, 2, 3]);
+    expect(items.map((item) => item.title)).toEqual(['첫 번째 조사지', '두 번째 조사지', '세 번째 조사지']);
+    expect(items.map((item) => item.rowNumber)).toEqual([11, 12, 13]);
   });
 
   it('filters release dates between start and end dates inclusively', () => {
@@ -61,6 +61,6 @@ describe('survey list model', () => {
       releasedAtTo: '2026-05-19',
     });
 
-    expect(filteredItems.map((item) => item.title)).toEqual(['두 번째 조사지', '첫 번째 조사지']);
+    expect(filteredItems.map((item) => item.title)).toEqual(['첫 번째 조사지', '두 번째 조사지']);
   });
 });

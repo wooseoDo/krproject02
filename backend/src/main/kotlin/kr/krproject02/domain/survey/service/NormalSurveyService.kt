@@ -1,7 +1,7 @@
 package kr.krproject02.domain.survey.service
 
-import kr.krproject02.domain.survey.constants.SurveyStatus
-import kr.krproject02.domain.survey.dto.SurveyListItemResponse
+import kr.krproject02.domain.survey.dto.SurveyListPageResponse
+import kr.krproject02.domain.survey.dto.SurveyListQuery
 import kr.krproject02.domain.survey.mapper.SurveyMapper
 import kr.krproject02.domain.survey.repository.SurveyRepository
 import kr.krproject02.domain.survey.validation.NormalSurveyValidator
@@ -14,11 +14,37 @@ class NormalSurveyService(
     private val normalSurveyValidator: NormalSurveyValidator,
 ) {
     @Transactional(readOnly = true)
-    fun getSurveyList(): List<SurveyListItemResponse> {
+    fun getSurveyList(query: SurveyListQuery): SurveyListPageResponse {
         normalSurveyValidator.validateListReadable()
-        return surveyRepository.findAllByStatusNotInAndDeletedFalseOrderByCreatedAtDesc(
-            listOf(SurveyStatus.LOCKED, SurveyStatus.CLOSED),
+        val totalItems = surveyRepository.countSurveyListPage(
+            normalOnly = true,
+            title = query.normalizedTitle,
+            maxScore = query.maxScore,
+            estimatedTimeSec = query.estimatedTimeSec,
+            surveyVersion = query.surveyVersion,
+            status = query.status?.name,
+            releasedAtFrom = query.releasedFromDateTime,
+            releasedAtTo = query.releasedToDateTime,
         )
-            .map(SurveyMapper::toListItemResponse)
+        val items = surveyRepository.findSurveyListPage(
+            normalOnly = true,
+            title = query.normalizedTitle,
+            maxScore = query.maxScore,
+            estimatedTimeSec = query.estimatedTimeSec,
+            surveyVersion = query.surveyVersion,
+            status = query.status?.name,
+            releasedAtFrom = query.releasedFromDateTime,
+            releasedAtTo = query.releasedToDateTime,
+            size = query.safeSize,
+            offset = query.offset,
+        ).map(SurveyMapper::toListItemResponse)
+
+        return SurveyListPageResponse(
+            items = items,
+            page = query.safePage,
+            size = query.safeSize,
+            totalItems = totalItems,
+            totalPages = ((totalItems + query.safeSize - 1) / query.safeSize).toInt().coerceAtLeast(1),
+        )
     }
 }

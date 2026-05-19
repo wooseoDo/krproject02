@@ -17,6 +17,14 @@ export type SurveyListItem = SurveyListItemResponse & {
   rowNumber: number;
 };
 
+export interface SurveyListPageResponse {
+  items: SurveyListItemResponse[];
+  page: number;
+  size: number;
+  totalItems: number;
+  totalPages: number;
+}
+
 export interface SurveyListFilters {
   title: string;
   maxScore: string;
@@ -28,6 +36,12 @@ export interface SurveyListFilters {
 }
 
 export interface SurveyListPageState {
+  page: number;
+  pageSize: number;
+  filters: SurveyListFilters;
+}
+
+export interface SurveyListQueryParams {
   page: number;
   pageSize: number;
   filters: SurveyListFilters;

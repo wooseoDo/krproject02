@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.PrePersist
 import jakarta.persistence.Table
+import kr.krproject02.common.core.utils.DateTimeUtils
 import kr.krproject02.common.core.utils.UuidV7Utils
 import kr.krproject02.domain.survey.constants.SurveyConstants
 import org.hibernate.annotations.Comment
@@ -49,7 +50,7 @@ open class SurveySection protected constructor(
 
     @Column(name = "created_at", nullable = false)
     @field:Comment("생성 일시")
-    open var createdAt: OffsetDateTime = OffsetDateTime.now(),
+    open var createdAt: OffsetDateTime = DateTimeUtils.nowKorea(),
 
     @Column(name = "updated_at")
     @field:Comment("수정 일시")

@@ -9,6 +9,7 @@ import jakarta.persistence.Index
 import jakarta.persistence.PrePersist
 import jakarta.persistence.Table
 import kr.krproject02.common.core.entity.SoftDelete
+import kr.krproject02.common.core.utils.DateTimeUtils
 import kr.krproject02.common.core.utils.UuidV7Utils
 import kr.krproject02.domain.survey.constants.SurveyConstants
 import kr.krproject02.domain.survey.constants.SurveyStatus
@@ -86,7 +87,7 @@ open class Survey protected constructor(
 
     fun changeStatus(status: SurveyStatus) {
         this.status = status
-        lockedAt = if (status == SurveyStatus.LOCKED) OffsetDateTime.now() else null
+        lockedAt = if (status == SurveyStatus.LOCKED) DateTimeUtils.nowKorea() else null
         lockedBy = if (status == SurveyStatus.LOCKED) lockedBy else null
         markUpdated()
     }

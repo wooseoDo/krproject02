@@ -13,4 +13,10 @@ export const surveyListItemSchema = z.object({
   createdAt: z.string(),
 });
 
-export const surveyListResponseSchema = z.array(surveyListItemSchema);
+export const surveyListPageResponseSchema = z.object({
+  items: z.array(surveyListItemSchema),
+  page: z.number().int().positive(),
+  size: z.number().int().positive(),
+  totalItems: z.number().int().nonnegative(),
+  totalPages: z.number().int().positive(),
+});

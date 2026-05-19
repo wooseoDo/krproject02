@@ -1,12 +1,14 @@
 package kr.krproject02.domain.survey.service
 
 import io.mockk.Runs
+import io.mockk.any
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import kr.krproject02.domain.survey.constants.SurveyQuestionType
 import kr.krproject02.domain.survey.constants.SurveyStatus
+import kr.krproject02.domain.survey.dto.SurveyListQuery
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyCreateRequest
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyQuestionOptionRequest
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyQuestionRequest
@@ -18,6 +20,7 @@ import kr.krproject02.domain.survey.entity.SurveyQuestionOption
 import kr.krproject02.domain.survey.entity.SurveySection
 import kr.krproject02.domain.survey.error.SurveyErrorCode
 import kr.krproject02.domain.survey.error.SurveyException
+import kr.krproject02.domain.survey.repository.SurveyListItemProjection
 import kr.krproject02.domain.survey.repository.SurveyQuestionOptionRepository
 import kr.krproject02.domain.survey.repository.SurveyQuestionRepository
 import kr.krproject02.domain.survey.repository.SurveyRepository
@@ -27,6 +30,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.time.Instant
 import java.util.UUID
 
 class AdminSurveyServiceTest {
@@ -55,16 +59,23 @@ class AdminSurveyServiceTest {
 
     @Test
     fun `get survey list for admin succeeds`() {
-        val survey = survey()
+        val query = surveyListQuery()
         every { adminSurveyValidator.validateListReadable() } just Runs
-        every { surveyRepository.findAllByDeletedFalseOrderByCreatedAtDesc() } returns listOf(survey)
+        every { surveyRepository.countSurveyListPage(false, any(), any(), any(), any(), any(), any(), any()) } returns 1L
+        every {
+            surveyRepository.findSurveyListPage(false, any(), any(), any(), any(), any(), any(), any(), 10, 0)
+        } returns listOf(surveyProjection())
 
-        val responses = adminSurveyService.getSurveyList()
+        val response = adminSurveyService.getSurveyList(query)
 
-        assertThat(responses).hasSize(1)
-        assertThat(responses.first().title).isEqualTo("직무 스트레스 자가진단 조사지")
+        assertThat(response.items).hasSize(1)
+        assertThat(response.items.first().title).isEqualTo("Work Stress Survey")
+        assertThat(response.totalPages).isEqualTo(1)
         verify(exactly = 1) { adminSurveyValidator.validateListReadable() }
-        verify(exactly = 1) { surveyRepository.findAllByDeletedFalseOrderByCreatedAtDesc() }
+        verify(exactly = 1) { surveyRepository.countSurveyListPage(false, any(), any(), any(), any(), any(), any(), any()) }
+        verify(exactly = 1) {
+            surveyRepository.findSurveyListPage(false, any(), any(), any(), any(), any(), any(), any(), 10, 0)
+        }
     }
 
     @Test
@@ -140,39 +151,62 @@ class AdminSurveyServiceTest {
         verify(exactly = 1) { surveyRepository.findBySurveyIdAndDeletedFalse(surveyId) }
     }
 
+    private fun surveyListQuery(): SurveyListQuery =
+        SurveyListQuery(
+            page = 1,
+            size = 10,
+            title = null,
+            maxScore = null,
+            estimatedTimeSec = null,
+            surveyVersion = null,
+            status = null,
+            releasedAtFrom = null,
+            releasedAtTo = null,
+        )
+
+    private fun surveyProjection(status: SurveyStatus = SurveyStatus.PUBLISHED): SurveyListItemProjection =
+        object : SurveyListItemProjection {
+            override val surveyId: UUID = UUID.randomUUID()
+            override val title: String = "Work Stress Survey"
+            override val surveyVersion: Int = 1
+            override val status: String = status.name
+            override val maxScore: Int = 30
+            override val category: String = "health/work"
+            override val estimatedTimeSec: Int = 600
+            override val createdAt: Instant = Instant.now()
+        }
+
     private fun survey(status: SurveyStatus = SurveyStatus.PUBLISHED): Survey =
         Survey.create(
-            title = "직무 스트레스 자가진단 조사지",
-            category = "심리/직무",
-            description = "업무 환경에서 느끼는 스트레스 정도를 확인하는 조사지",
+            title = "Work Stress Survey",
+            category = "health/work",
+            description = "Survey for checking work stress level.",
             status = status,
             maxScore = 30,
             estimatedTimeSec = 600,
             surveySchema = "{}",
         )
 
-    private fun createRequest(
-        maxScore: Int = 30,
-    ): AdminSurveyCreateRequest =
+    private fun createRequest(maxScore: Int = 30): AdminSurveyCreateRequest =
         AdminSurveyCreateRequest(
-            title = "직무 스트레스 자가진단 조사지",
-            category = "심리/직무",
-            description = "업무 환경에서 느끼는 스트레스 정도를 확인하는 조사지",
+            title = "Work Stress Survey",
+            category = "health/work",
+            description = "Survey for checking work stress level.",
             status = SurveyStatus.PUBLISHED,
             maxScore = maxScore,
             estimatedTimeSec = 600,
             sections = listOf(
                 AdminSurveySectionRequest(
-                    title = "업무 부담",
+                    title = "Workload",
                     targetAverageScore = 7.0,
                     questions = List(5) {
                         AdminSurveyQuestionRequest(
                             questionType = SurveyQuestionType.LIKERT,
-                            title = "최근 2주 동안 업무량이 감당하기 어렵다고 느낀 적이 있다.",
+                            title = "I have felt overloaded by work recently.",
                             score = 6,
                             options = listOf(
-                                AdminSurveyQuestionOptionRequest("전혀 아니다", 0),
-                                AdminSurveyQuestionOptionRequest("매우 그렇다", 5),
+                                AdminSurveyQuestionOptionRequest("Strongly disagree", 0),
+                                AdminSurveyQuestionOptionRequest("Strongly agree", 5),
                             ),
                         )
                     },

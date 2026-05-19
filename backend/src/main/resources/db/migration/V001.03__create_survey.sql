@@ -44,6 +44,17 @@ CREATE INDEX ix_survey_created_at
 ON survey(created_at DESC)
 WHERE is_deleted = FALSE;
 
+CREATE INDEX ix_survey_admin_list_cover
+ON survey(created_at DESC, survey_id DESC)
+INCLUDE (title, survey_version, status, max_score, category, estimated_time_sec)
+WHERE is_deleted = FALSE;
+
+CREATE INDEX ix_survey_normal_list_cover
+ON survey(created_at DESC, survey_id DESC)
+INCLUDE (title, survey_version, status, max_score, category, estimated_time_sec)
+WHERE is_deleted = FALSE
+  AND status NOT IN ('LOCKED', 'CLOSED');
+
 CREATE INDEX ix_survey_status
 ON survey(status)
 WHERE is_deleted = FALSE;

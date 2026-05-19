@@ -1,6 +1,7 @@
 package kr.krproject02.domain.survey.service
 
-import kr.krproject02.domain.survey.dto.SurveyListItemResponse
+import kr.krproject02.domain.survey.dto.SurveyListPageResponse
+import kr.krproject02.domain.survey.dto.SurveyListQuery
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyCreateRequest
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyCreateResponse
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyStatusUpdateRequest
@@ -32,10 +33,38 @@ class AdminSurveyService(
     private val adminSurveyValidator: AdminSurveyValidator,
 ) {
     @Transactional(readOnly = true)
-    fun getSurveyList(): List<SurveyListItemResponse> {
+    fun getSurveyList(query: SurveyListQuery): SurveyListPageResponse {
         adminSurveyValidator.validateListReadable()
-        return surveyRepository.findAllByDeletedFalseOrderByCreatedAtDesc()
-            .map(SurveyMapper::toListItemResponse)
+        val totalItems = surveyRepository.countSurveyListPage(
+            normalOnly = false,
+            title = query.normalizedTitle,
+            maxScore = query.maxScore,
+            estimatedTimeSec = query.estimatedTimeSec,
+            surveyVersion = query.surveyVersion,
+            status = query.status?.name,
+            releasedAtFrom = query.releasedFromDateTime,
+            releasedAtTo = query.releasedToDateTime,
+        )
+        val items = surveyRepository.findSurveyListPage(
+            normalOnly = false,
+            title = query.normalizedTitle,
+            maxScore = query.maxScore,
+            estimatedTimeSec = query.estimatedTimeSec,
+            surveyVersion = query.surveyVersion,
+            status = query.status?.name,
+            releasedAtFrom = query.releasedFromDateTime,
+            releasedAtTo = query.releasedToDateTime,
+            size = query.safeSize,
+            offset = query.offset,
+        ).map(SurveyMapper::toListItemResponse)
+
+        return SurveyListPageResponse(
+            items = items,
+            page = query.safePage,
+            size = query.safeSize,
+            totalItems = totalItems,
+            totalPages = ((totalItems + query.safeSize - 1) / query.safeSize).toInt().coerceAtLeast(1),
+        )
     }
 
     @Transactional

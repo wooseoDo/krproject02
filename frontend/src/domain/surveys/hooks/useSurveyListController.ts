@@ -3,29 +3,32 @@ import {
   createSurveyListDefaultFilters,
   SURVEY_PAGE_SIZE,
 } from '../config/surveyListConfig';
-import {
-  buildSurveyListItems,
-  filterSurveyListItems,
-  paginateSurveyListItems,
-} from '../model/list';
+import { buildSurveyListItems } from '../model/list';
 import {
   readSurveyListPageState,
   saveSurveyListPageState,
 } from '../model/paginationSession';
 import type {
   SurveyListFilters,
-  SurveyListItemResponse,
+  SurveyListPageResponse,
+  SurveyListQueryParams,
   SurveyScope,
 } from '../types/types';
 
 interface UseSurveyListControllerOptions {
   scope: SurveyScope;
-  fetchSurveys: () => Promise<SurveyListItemResponse[]>;
+  fetchSurveys: (params: SurveyListQueryParams) => Promise<SurveyListPageResponse>;
 }
 
 export function useSurveyListController({ scope, fetchSurveys }: UseSurveyListControllerOptions) {
   const initialState = useMemo(() => readSurveyListPageState(scope), [scope]);
-  const [surveys, setSurveys] = useState<SurveyListItemResponse[]>([]);
+  const [response, setResponse] = useState<SurveyListPageResponse>({
+    items: [],
+    page: initialState.page,
+    size: SURVEY_PAGE_SIZE,
+    totalItems: 0,
+    totalPages: 1,
+  });
   const [filters, setFilters] = useState<SurveyListFilters>(initialState.filters);
   const [page, setPage] = useState(initialState.page);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,10 +42,14 @@ export function useSurveyListController({ scope, fetchSurveys }: UseSurveyListCo
       setError('');
 
       try {
-        const data = await fetchSurveys();
+        const data = await fetchSurveys({
+          page,
+          pageSize: SURVEY_PAGE_SIZE,
+          filters,
+        });
 
         if (mounted) {
-          setSurveys(data);
+          setResponse(data);
         }
       } catch {
         if (mounted) {
@@ -60,7 +67,7 @@ export function useSurveyListController({ scope, fetchSurveys }: UseSurveyListCo
     return () => {
       mounted = false;
     };
-  }, [fetchSurveys]);
+  }, [fetchSurveys, filters, page]);
 
   useEffect(() => {
     saveSurveyListPageState(scope, {
@@ -70,13 +77,11 @@ export function useSurveyListController({ scope, fetchSurveys }: UseSurveyListCo
     });
   }, [filters, page, scope]);
 
-  const sortedItems = useMemo(() => buildSurveyListItems(surveys), [surveys]);
-  const filteredItems = useMemo(() => filterSurveyListItems(sortedItems, filters), [filters, sortedItems]);
-  const totalPages = Math.max(1, Math.ceil(filteredItems.length / SURVEY_PAGE_SIZE));
+  const totalPages = response.totalPages;
   const safePage = Math.min(page, totalPages);
   const pageItems = useMemo(
-    () => paginateSurveyListItems(filteredItems, safePage, SURVEY_PAGE_SIZE),
-    [filteredItems, safePage],
+    () => buildSurveyListItems(response.items, response.page, response.size),
+    [response.items, response.page, response.size],
   );
 
   const updateFilter = (key: keyof SurveyListFilters, value: string) => {
@@ -93,7 +98,7 @@ export function useSurveyListController({ scope, fetchSurveys }: UseSurveyListCo
     filters,
     page: safePage,
     pageSize: SURVEY_PAGE_SIZE,
-    totalItems: filteredItems.length,
+    totalItems: response.totalItems,
     totalPages,
     pageItems,
     isLoading,

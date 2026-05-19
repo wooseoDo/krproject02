@@ -1,17 +1,21 @@
 package kr.krproject02.domain.survey.service
 
 import io.mockk.Runs
+import io.mockk.any
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import kr.krproject02.domain.survey.constants.SurveyStatus
-import kr.krproject02.domain.survey.entity.Survey
+import kr.krproject02.domain.survey.dto.SurveyListQuery
+import kr.krproject02.domain.survey.repository.SurveyListItemProjection
 import kr.krproject02.domain.survey.repository.SurveyRepository
 import kr.krproject02.domain.survey.validation.NormalSurveyValidator
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.Instant
+import java.util.UUID
 
 class NormalSurveyServiceTest {
     private lateinit var surveyRepository: SurveyRepository
@@ -30,34 +34,44 @@ class NormalSurveyServiceTest {
 
     @Test
     fun `normal user list excludes locked and closed surveys`() {
-        val publishedSurvey = survey(SurveyStatus.PUBLISHED)
+        val query = SurveyListQuery(
+            page = 1,
+            size = 10,
+            title = null,
+            maxScore = null,
+            estimatedTimeSec = null,
+            surveyVersion = null,
+            status = null,
+            releasedAtFrom = null,
+            releasedAtTo = null,
+        )
         every { normalSurveyValidator.validateListReadable() } just Runs
+        every { surveyRepository.countSurveyListPage(true, any(), any(), any(), any(), any(), any(), any()) } returns 1L
         every {
-            surveyRepository.findAllByStatusNotInAndDeletedFalseOrderByCreatedAtDesc(
-                listOf(SurveyStatus.LOCKED, SurveyStatus.CLOSED),
-            )
-        } returns listOf(publishedSurvey)
+            surveyRepository.findSurveyListPage(true, any(), any(), any(), any(), any(), any(), any(), 10, 0)
+        } returns listOf(surveyProjection(SurveyStatus.PUBLISHED))
 
-        val responses = normalSurveyService.getSurveyList()
+        val response = normalSurveyService.getSurveyList(query)
 
-        assertThat(responses).hasSize(1)
-        assertThat(responses.first().status).isEqualTo(SurveyStatus.PUBLISHED)
+        assertThat(response.items).hasSize(1)
+        assertThat(response.items.first().status).isEqualTo(SurveyStatus.PUBLISHED)
+        assertThat(response.totalItems).isEqualTo(1)
         verify(exactly = 1) { normalSurveyValidator.validateListReadable() }
+        verify(exactly = 1) { surveyRepository.countSurveyListPage(true, any(), any(), any(), any(), any(), any(), any()) }
         verify(exactly = 1) {
-            surveyRepository.findAllByStatusNotInAndDeletedFalseOrderByCreatedAtDesc(
-                listOf(SurveyStatus.LOCKED, SurveyStatus.CLOSED),
-            )
+            surveyRepository.findSurveyListPage(true, any(), any(), any(), any(), any(), any(), any(), 10, 0)
         }
     }
 
-    private fun survey(status: SurveyStatus): Survey =
-        Survey.create(
-            title = "직무 스트레스 자가진단 조사지",
-            category = "심리/직무",
-            description = "업무 환경에서 느끼는 스트레스 정도를 확인하는 조사지",
-            status = status,
-            maxScore = 30,
-            estimatedTimeSec = 600,
-            surveySchema = "{}",
-        )
+    private fun surveyProjection(status: SurveyStatus): SurveyListItemProjection =
+        object : SurveyListItemProjection {
+            override val surveyId: UUID = UUID.randomUUID()
+            override val title: String = "Work Stress Survey"
+            override val surveyVersion: Int = 1
+            override val status: String = status.name
+            override val maxScore: Int = 30
+            override val category: String = "health/work"
+            override val estimatedTimeSec: Int = 600
+            override val createdAt: Instant = Instant.now()
+        }
 }

@@ -33,6 +33,8 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.13")
     testImplementation("com.tngtech.archunit:archunit-junit5:1.4.1")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    // QueryDSL 설정
 }
 
 tasks.withType<Test> {

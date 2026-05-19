@@ -6,6 +6,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.Index
 import jakarta.persistence.PrePersist
 import jakarta.persistence.Table
+import kr.krproject02.common.core.utils.DateTimeUtils
 import kr.krproject02.common.core.utils.UuidV7Utils
 import kr.krproject02.domain.survey.constants.SurveyConstants
 import org.hibernate.annotations.Comment
@@ -46,7 +47,7 @@ open class SurveyResponse protected constructor(
 
     @Column(name = "started_at", nullable = false)
     @field:Comment("응답 시작 일시")
-    open var startedAt: OffsetDateTime = OffsetDateTime.now(),
+    open var startedAt: OffsetDateTime = DateTimeUtils.nowKorea(),
 
     @Column(name = "submitted_at")
     @field:Comment("응답 제출 일시")
