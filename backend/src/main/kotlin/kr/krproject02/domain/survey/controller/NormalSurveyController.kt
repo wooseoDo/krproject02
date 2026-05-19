@@ -22,7 +22,7 @@ class NormalSurveyController(
     @PreAuthorize("hasAuthority('$SURVEY_PAGE_READ')")
     override fun getSurveyList(
         @RequestParam(defaultValue = "1") page: Int,
-        @RequestParam(defaultValue = "10") size: Int,
+        @RequestParam(defaultValue = "2") size: Int,
         @RequestParam(required = false) title: String?,
         @RequestParam(required = false) maxScore: Int?,
         @RequestParam(required = false) estimatedTimeSec: Int?,

@@ -1,6 +1,11 @@
 import { api } from '../../../../common/api/client/apiClient';
-import { surveyListPageResponseSchema } from '../../types/schemas';
-import type { SurveyListPageResponse, SurveyListQueryParams } from '../../types/types';
+import { adminSurveyCreateResponseSchema, surveyListPageResponseSchema } from '../../types/schemas';
+import type {
+  AdminSurveyCreateRequest,
+  AdminSurveyCreateResponse,
+  SurveyListPageResponse,
+  SurveyListQueryParams,
+} from '../../types/types';
 import { SURVEY_API_URLS } from '../apiUrls';
 
 function createSurveyListSearchParams({ page, pageSize, filters }: SurveyListQueryParams) {
@@ -24,4 +29,9 @@ export async function fetchAdminSurveys(params: SurveyListQueryParams): Promise<
   const searchParams = createSurveyListSearchParams(params);
   const response = await api.get<unknown>(`${SURVEY_API_URLS.ADMIN.BASE}?${searchParams.toString()}`);
   return surveyListPageResponseSchema.parse(response.data);
+}
+
+export async function createAdminSurvey(payload: AdminSurveyCreateRequest): Promise<AdminSurveyCreateResponse> {
+  const response = await api.post<unknown, AdminSurveyCreateRequest>(SURVEY_API_URLS.ADMIN.BASE, payload);
+  return adminSurveyCreateResponseSchema.parse(response.data);
 }

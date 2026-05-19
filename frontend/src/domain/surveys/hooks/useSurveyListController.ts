@@ -33,6 +33,7 @@ export function useSurveyListController({ scope, fetchSurveys }: UseSurveyListCo
   const [page, setPage] = useState(initialState.page);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let mounted = true;
@@ -67,7 +68,7 @@ export function useSurveyListController({ scope, fetchSurveys }: UseSurveyListCo
     return () => {
       mounted = false;
     };
-  }, [fetchSurveys, filters, page]);
+  }, [fetchSurveys, filters, page, reloadKey]);
 
   useEffect(() => {
     saveSurveyListPageState(scope, {
@@ -105,6 +106,7 @@ export function useSurveyListController({ scope, fetchSurveys }: UseSurveyListCo
     error,
     updateFilter,
     resetFilters,
+    refresh: () => setReloadKey((current) => current + 1),
     setPage,
   };
 }

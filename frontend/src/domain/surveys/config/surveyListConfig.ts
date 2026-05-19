@@ -1,6 +1,6 @@
 import type { SurveyListFilters, SurveyListPageState } from '../types/types';
 
-export const SURVEY_PAGE_SIZE = 10;
+export const SURVEY_PAGE_SIZE = 2;
 
 export const createSurveyListDefaultFilters = (): SurveyListFilters => ({
   title: '',

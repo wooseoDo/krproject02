@@ -23,7 +23,7 @@ interface SurveyRepository : JpaRepository<Survey, UUID> {
                 created_at AS "createdAt"
             FROM survey
             WHERE is_deleted = FALSE
-              AND (:normalOnly = FALSE OR status NOT IN ('LOCKED', 'CLOSED'))
+              AND (:normalOnly = FALSE OR status NOT IN ('LOCKED', 'CLOSED', 'DRAFT'))
               AND (CAST(:title AS TEXT) IS NULL OR LOWER(title) LIKE LOWER(CONCAT('%', CAST(:title AS TEXT), '%')))
               AND (CAST(:maxScore AS INTEGER) IS NULL OR max_score = CAST(:maxScore AS INTEGER))
               AND (CAST(:estimatedTimeSec AS INTEGER) IS NULL OR estimated_time_sec = CAST(:estimatedTimeSec AS INTEGER))
@@ -54,7 +54,7 @@ interface SurveyRepository : JpaRepository<Survey, UUID> {
             SELECT COUNT(*)
             FROM survey
             WHERE is_deleted = FALSE
-              AND (:normalOnly = FALSE OR status NOT IN ('LOCKED', 'CLOSED'))
+              AND (:normalOnly = FALSE OR status NOT IN ('LOCKED', 'CLOSED', 'DRAFT'))
               AND (CAST(:title AS TEXT) IS NULL OR LOWER(title) LIKE LOWER(CONCAT('%', CAST(:title AS TEXT), '%')))
               AND (CAST(:maxScore AS INTEGER) IS NULL OR max_score = CAST(:maxScore AS INTEGER))
               AND (CAST(:estimatedTimeSec AS INTEGER) IS NULL OR estimated_time_sec = CAST(:estimatedTimeSec AS INTEGER))

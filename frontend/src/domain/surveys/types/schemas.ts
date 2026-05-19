@@ -20,3 +20,10 @@ export const surveyListPageResponseSchema = z.object({
   totalItems: z.number().int().nonnegative(),
   totalPages: z.number().int().positive(),
 });
+
+export const adminSurveyCreateResponseSchema = z.object({
+  surveyId: z.string().uuid().nullable(),
+  title: z.string(),
+  surveyVersion: z.number().int().nonnegative(),
+  status: surveyStatusSchema,
+});

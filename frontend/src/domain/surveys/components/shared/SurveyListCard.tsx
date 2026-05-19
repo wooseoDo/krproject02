@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { SURVEY_MESSAGES } from '../../constants/messages';
 import type { SurveyListFilters as SurveyListFiltersValue, SurveyListItem } from '../../types/types';
 import { SurveyDataTable } from './SurveyDataTable';
@@ -5,6 +6,7 @@ import { SurveyListFilters } from './SurveyListFilters';
 
 interface SurveyListCardProps {
   title?: string;
+  action?: ReactNode;
   filters: SurveyListFiltersValue;
   pageItems: SurveyListItem[];
   page: number;
@@ -19,6 +21,7 @@ interface SurveyListCardProps {
 
 export function SurveyListCard({
   title = '조사지 목록',
+  action,
   filters,
   pageItems,
   page,
@@ -37,6 +40,7 @@ export function SurveyListCard({
         <div className="survey-table-summary">
           <span>총 {totalItems.toLocaleString()}개</span>
           <span>최신순 정렬</span>
+          {action}
         </div>
       </div>
 

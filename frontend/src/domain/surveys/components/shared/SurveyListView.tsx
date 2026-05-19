@@ -1,4 +1,5 @@
 import { AuthHeader } from '../../../../common/components/layout/AuthHeader';
+import type { ReactNode } from 'react';
 import type { SurveyListFilters as SurveyListFiltersValue, SurveyListItem } from '../../types/types';
 import { SurveyListCard } from './SurveyListCard';
 
@@ -10,6 +11,8 @@ interface SurveyListViewProps {
   accountInfo: string;
   dashboardPath: string;
   surveyPath: string;
+  listAction?: ReactNode;
+  children?: ReactNode;
   filters: SurveyListFiltersValue;
   pageItems: SurveyListItem[];
   page: number;
@@ -31,6 +34,8 @@ export function SurveyListView({
   accountInfo,
   dashboardPath,
   surveyPath,
+  listAction,
+  children,
   filters,
   pageItems,
   page,
@@ -61,6 +66,7 @@ export function SurveyListView({
       </section>
 
       <SurveyListCard
+        action={listAction}
         filters={filters}
         pageItems={pageItems}
         page={page}
@@ -72,6 +78,7 @@ export function SurveyListView({
         onResetFilters={onResetFilters}
         onPageChange={onPageChange}
       />
+      {children}
     </main>
   );
 }

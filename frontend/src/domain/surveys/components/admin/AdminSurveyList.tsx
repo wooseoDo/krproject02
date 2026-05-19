@@ -1,10 +1,13 @@
+import { useState } from 'react';
 import { clearAuthenticatedUser, readAuthenticatedUser } from '../../../users/model/authSession';
 import { useAdminSurveyList } from '../../hooks/admin/useAdminSurveyList';
 import { SurveyListView } from '../shared/SurveyListView';
+import { AdminSurveyCreatePanel } from './AdminSurveyCreatePanel';
 
 export function AdminSurveyList() {
   const user = readAuthenticatedUser();
   const list = useAdminSurveyList();
+  const [createOpen, setCreateOpen] = useState(false);
 
   const handleLogout = () => {
     clearAuthenticatedUser();
@@ -21,6 +24,11 @@ export function AdminSurveyList() {
       accountInfo={user?.createdAt ? new Date(user.createdAt).toLocaleDateString('ko-KR') : '-'}
       dashboardPath="/admin/dashboard"
       surveyPath="/admin/surveys"
+      listAction={
+        <button type="button" className="primary-action survey-create-open-button" onClick={() => setCreateOpen(true)}>
+          + 조사지 생성
+        </button>
+      }
       filters={list.filters}
       pageItems={list.pageItems}
       page={list.page}
@@ -32,6 +40,8 @@ export function AdminSurveyList() {
       onFilterChange={list.updateFilter}
       onResetFilters={list.resetFilters}
       onPageChange={list.setPage}
-    />
+    >
+      {createOpen && <AdminSurveyCreatePanel onCreated={list.refresh} onCancel={() => setCreateOpen(false)} />}
+    </SurveyListView>
   );
 }
