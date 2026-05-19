@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import AdminSurveyListPage from './domain/surveys/pages/admin/AdminSurveyListPage';
+import SurveyParticipationPage from './domain/surveys/pages/normal/SurveyParticipationPage';
 import SurveyListPage from './domain/surveys/pages/normal/SurveyListPage';
 import AdminDashboardPage from './domain/users/pages/admin/AdminDashboardPage';
 import AdminLoginPage from './domain/users/pages/admin/AdminLoginPage';
@@ -70,6 +71,11 @@ function App() {
   if (path === '/surveys') {
     const user = readAuthenticatedUser();
     return user?.scope === 'normal' ? <SurveyListPage /> : <UserLoginPage />;
+  }
+
+  if (/^\/surveys\/[^/]+\/participate$/.test(path)) {
+    const user = readAuthenticatedUser();
+    return user?.scope === 'normal' ? <SurveyParticipationPage /> : <UserLoginPage />;
   }
 
   if (path === '/admin/surveys') {

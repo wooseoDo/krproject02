@@ -113,3 +113,89 @@ export interface AdminSurveyCreateDraft {
   estimatedTimeMinutes: string;
   sections: SurveySectionDraft[];
 }
+
+export interface NormalSurveyParticipationOptionResponse {
+  optionId: string | null;
+  optionSort: number;
+  optionLabel: string;
+}
+
+export interface NormalSurveyParticipationQuestionResponse {
+  questionId: string | null;
+  questionSort: number;
+  questionType: SurveyQuestionType;
+  title: string;
+  options: NormalSurveyParticipationOptionResponse[];
+}
+
+export interface NormalSurveyParticipationSectionResponse {
+  sectionId: string | null;
+  sectionSort: number;
+  title: string;
+  targetAverageScore: number | null;
+  questions: NormalSurveyParticipationQuestionResponse[];
+}
+
+export interface NormalSurveyParticipationDetailResponse {
+  surveyId: string | null;
+  surveyGroupId: string | null;
+  surveyVersion: number;
+  title: string;
+  category: string | null;
+  description: string | null;
+  status: SurveyStatus;
+  maxScore: number;
+  estimatedTimeSec: number | null;
+  sections: NormalSurveyParticipationSectionResponse[];
+}
+
+export interface NormalSurveyParticipationStartRequest {
+  userId: string | null;
+}
+
+export interface NormalSurveyParticipationStartResponse {
+  responseId: string | null;
+  surveyId: string | null;
+  surveyGroupId: string | null;
+  surveyVersion: number;
+  surveyTitle: string;
+  resumed: boolean;
+}
+
+export interface NormalSurveySubmitAnswerRequest {
+  questionId: string;
+  optionId: string;
+}
+
+export interface NormalSurveySubmitRequest {
+  elapsedTimeSec: number;
+  answers: NormalSurveySubmitAnswerRequest[];
+}
+
+export interface NormalSurveySubmitResponse {
+  responseId: string | null;
+  surveyId: string | null;
+  surveyGroupId: string | null;
+  surveyVersion: number;
+  completed: boolean;
+  submittedAt: string | null;
+  elapsedTimeSec: number | null;
+  totalScore: number | null;
+}
+
+export interface SurveyParticipationDraftAnswer {
+  questionId: string;
+  optionId: string;
+  answeredAt: string;
+}
+
+export interface SurveyParticipationDraft {
+  responseId: string;
+  surveyId: string;
+  surveyGroupId: string;
+  surveyVersion: number;
+  userId: string;
+  startedAt: string;
+  lastSavedAt: string;
+  answers: Record<string, SurveyParticipationDraftAnswer>;
+}

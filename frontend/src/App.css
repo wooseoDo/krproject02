@@ -651,6 +651,200 @@
   white-space: nowrap;
 }
 
+.survey-participation-header,
+.survey-participation-actions,
+.survey-participation-progress__meta,
+.survey-participation-section__header,
+.survey-participation-question__title,
+.survey-participation-stats {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.survey-participation-header {
+  padding-top: 18px;
+}
+
+.survey-participation-header h1,
+.survey-participation-section h2,
+.survey-participation-question h3,
+.survey-complete-panel h1,
+.survey-submit-modal h2 {
+  margin: 0;
+}
+
+.survey-participation-stats {
+  justify-content: flex-end;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  font-weight: 800;
+}
+
+.survey-participation-stats span {
+  color: var(--text-h);
+}
+
+.survey-participation-progress,
+.survey-participation-sections,
+.survey-participation-section,
+.survey-participation-questions,
+.survey-participation-question,
+.survey-complete-panel,
+.survey-submit-modal {
+  display: grid;
+  gap: 14px;
+}
+
+.survey-participation-progress {
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.survey-participation-progress__track {
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--field-bg);
+}
+
+.survey-participation-progress__track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transition: width 160ms ease;
+}
+
+.survey-participation-section,
+.survey-complete-panel,
+.survey-submit-modal {
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.survey-participation-section__header {
+  justify-content: flex-start;
+}
+
+.survey-participation-section__header > span,
+.survey-participation-question__title > span {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  color: #fff;
+  background: var(--ink);
+  font-weight: 800;
+}
+
+.survey-participation-question {
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--field-bg);
+}
+
+.survey-participation-question__title {
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.survey-participation-question__title h3 {
+  flex: 1;
+  min-width: 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.survey-answer-options {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.survey-answer-option {
+  display: grid;
+  grid-template-columns: 18px 44px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.survey-answer-option input {
+  margin: 0;
+}
+
+.survey-answer-option span {
+  color: var(--accent);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.survey-answer-option strong {
+  min-width: 0;
+  color: var(--text-h);
+  overflow-wrap: anywhere;
+}
+
+.survey-participation-actions {
+  justify-content: flex-end;
+  padding-bottom: 16px;
+}
+
+.survey-complete-panel {
+  justify-items: start;
+}
+
+.survey-complete-panel dl {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 0;
+}
+
+.survey-complete-panel dl div {
+  display: grid;
+  gap: 4px;
+  min-width: 120px;
+}
+
+.survey-complete-panel dt {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.survey-complete-panel dd {
+  margin: 0;
+  color: var(--text-h);
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.survey-submit-modal {
+  width: min(100%, 420px);
+}
+
 .metric-card {
   display: grid;
   gap: 10px;
@@ -725,6 +919,16 @@
   .survey-question-editor__fields,
   .survey-option-row {
     grid-template-columns: 1fr;
+  }
+
+  .survey-participation-header,
+  .survey-participation-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .survey-participation-stats {
+    justify-content: flex-start;
   }
 
   .survey-create-grid__wide,
