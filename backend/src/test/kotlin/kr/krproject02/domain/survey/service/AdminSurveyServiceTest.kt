@@ -1,7 +1,6 @@
 package kr.krproject02.domain.survey.service
 
 import io.mockk.Runs
-import io.mockk.any
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -94,10 +93,79 @@ class AdminSurveyServiceTest {
         assertThat(response.title).isEqualTo(request.title)
         assertThat(response.status).isEqualTo(SurveyStatus.PUBLISHED)
         verify(exactly = 1) { adminSurveyValidator.validateCreateRequest(request) }
-        verify(exactly = 1) { surveyRepository.save(any<Survey>()) }
+        verify(exactly = 1) {
+            surveyRepository.save(
+                match {
+                    it.surveyVersion == 1 &&
+                        it.previousSurveyId == null &&
+                        it.latest
+                },
+            )
+        }
         verify(exactly = 1) { surveySectionRepository.save(any<SurveySection>()) }
         verify(exactly = 5) { surveyQuestionRepository.save(any<SurveyQuestion>()) }
         verify(exactly = 5) { surveyQuestionOptionRepository.saveAll(any<Iterable<SurveyQuestionOption>>()) }
+    }
+
+    @Test
+    fun `update survey creates next version and marks previous survey not latest`() {
+        val surveyId = UUID.randomUUID()
+        val groupId = UUID.randomUUID()
+        val request = createRequest()
+        val previousSurvey = survey().apply {
+            this.surveyId = surveyId
+            this.surveyGroupId = groupId
+            this.surveyVersion = 1
+        }
+
+        every { adminSurveyValidator.validateCreateRequest(request) } just Runs
+        every { surveyRepository.findBySurveyIdAndLatestTrueAndDeletedFalse(surveyId) } returns previousSurvey
+        every { surveyRepository.flush() } just Runs
+        every { surveyRepository.save(any<Survey>()) } answers { firstArg() }
+        every { surveySectionRepository.save(any<SurveySection>()) } answers { firstArg() }
+        every { surveyQuestionRepository.save(any<SurveyQuestion>()) } answers { firstArg() }
+        every { surveyQuestionOptionRepository.saveAll(any<Iterable<SurveyQuestionOption>>()) } answers {
+            firstArg<Iterable<SurveyQuestionOption>>().toMutableList()
+        }
+
+        val response = adminSurveyService.updateSurvey(surveyId, request)
+
+        assertThat(previousSurvey.latest).isFalse()
+        assertThat(response.surveyVersion).isEqualTo(2)
+        verify(exactly = 1) { adminSurveyValidator.validateCreateRequest(request) }
+        verify(exactly = 1) { surveyRepository.findBySurveyIdAndLatestTrueAndDeletedFalse(surveyId) }
+        verify(exactly = 1) { surveyRepository.flush() }
+        verify(exactly = 1) {
+            surveyRepository.save(
+                match {
+                    it.surveyGroupId == groupId &&
+                        it.previousSurveyId == surveyId &&
+                        it.surveyVersion == 2 &&
+                        it.latest
+                },
+            )
+        }
+        verify(exactly = 1) { surveySectionRepository.save(any<SurveySection>()) }
+        verify(exactly = 5) { surveyQuestionRepository.save(any<SurveyQuestion>()) }
+        verify(exactly = 5) { surveyQuestionOptionRepository.saveAll(any<Iterable<SurveyQuestionOption>>()) }
+    }
+
+    @Test
+    fun `update survey throws when latest survey does not exist`() {
+        val surveyId = UUID.randomUUID()
+        val request = createRequest()
+        every { adminSurveyValidator.validateCreateRequest(request) } just Runs
+        every { surveyRepository.findBySurveyIdAndLatestTrueAndDeletedFalse(surveyId) } returns null
+
+        val exception = assertThrows<SurveyException> {
+            adminSurveyService.updateSurvey(surveyId, request)
+        }
+
+        assertThat(exception.errorCode).isEqualTo(SurveyErrorCode.NOT_FOUND)
+        verify(exactly = 1) { adminSurveyValidator.validateCreateRequest(request) }
+        verify(exactly = 1) { surveyRepository.findBySurveyIdAndLatestTrueAndDeletedFalse(surveyId) }
+        verify(exactly = 0) { surveyRepository.flush() }
+        verify(exactly = 0) { surveyRepository.save(any<Survey>()) }
     }
 
     @Test

@@ -3,6 +3,8 @@ import { adminSurveyCreateResponseSchema, surveyListPageResponseSchema } from '.
 import type {
   AdminSurveyCreateRequest,
   AdminSurveyCreateResponse,
+  AdminSurveyUpdateRequest,
+  AdminSurveyUpdateResponse,
   SurveyListPageResponse,
   SurveyListQueryParams,
 } from '../../types/types';
@@ -33,5 +35,13 @@ export async function fetchAdminSurveys(params: SurveyListQueryParams): Promise<
 
 export async function createAdminSurvey(payload: AdminSurveyCreateRequest): Promise<AdminSurveyCreateResponse> {
   const response = await api.post<unknown, AdminSurveyCreateRequest>(SURVEY_API_URLS.ADMIN.BASE, payload);
+  return adminSurveyCreateResponseSchema.parse(response.data);
+}
+
+export async function updateAdminSurvey(
+  surveyId: string,
+  payload: AdminSurveyUpdateRequest,
+): Promise<AdminSurveyUpdateResponse> {
+  const response = await api.put<unknown, AdminSurveyUpdateRequest>(SURVEY_API_URLS.ADMIN.DETAIL(surveyId), payload);
   return adminSurveyCreateResponseSchema.parse(response.data);
 }

@@ -12,6 +12,8 @@ import kr.krproject02.domain.survey.dto.admin.AdminSurveyCreateRequest
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyCreateResponse
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyStatusUpdateRequest
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyStatusUpdateResponse
+import kr.krproject02.domain.survey.dto.admin.AdminSurveyUpdateRequest
+import kr.krproject02.domain.survey.dto.admin.AdminSurveyUpdateResponse
 import kr.krproject02.domain.survey.service.AdminSurveyService
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -28,7 +31,7 @@ import java.time.LocalDate
 import java.util.UUID
 
 @RestController
-@RequestMapping("/admin/surveys", "/api/admin/surveys")
+@RequestMapping("/admin/surveys")
 class AdminSurveyController(
     private val adminSurveyService: AdminSurveyService,
 ) : AdminSurveyApi {
@@ -66,6 +69,14 @@ class AdminSurveyController(
         @Valid @RequestBody request: AdminSurveyCreateRequest,
     ): AdminSurveyCreateResponse =
         adminSurveyService.createSurvey(request)
+
+    @PutMapping("/{surveyId}")
+    @PreAuthorize("hasAuthority('$ADMIN_SURVEY_UPDATE')")
+    override fun updateSurvey(
+        @PathVariable surveyId: UUID,
+        @Valid @RequestBody request: AdminSurveyUpdateRequest,
+    ): AdminSurveyUpdateResponse =
+        adminSurveyService.updateSurvey(surveyId, request)
 
     @PatchMapping("/{surveyId}/status")
     @PreAuthorize("hasAuthority('$ADMIN_SURVEY_UPDATE')")

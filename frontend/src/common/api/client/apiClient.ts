@@ -33,7 +33,7 @@ async function parseErrorBody(response: Response): Promise<ApiErrorBody | null> 
 }
 
 async function requestJson<TResponse, TPayload>(
-  method: 'GET' | 'POST',
+  method: 'GET' | 'POST' | 'PUT',
   url: string,
   payload?: TPayload,
 ): Promise<ApiResponse<TResponse>> {
@@ -61,5 +61,8 @@ export const api = {
   post<TResponse, TPayload>(url: string, payload: TPayload): Promise<ApiResponse<TResponse>> {
     // Send a JSON POST request and return an Axios-like response object.
     return requestJson<TResponse, TPayload>('POST', url, payload);
+  },
+  put<TResponse, TPayload>(url: string, payload: TPayload): Promise<ApiResponse<TResponse>> {
+    return requestJson<TResponse, TPayload>('PUT', url, payload);
   },
 };

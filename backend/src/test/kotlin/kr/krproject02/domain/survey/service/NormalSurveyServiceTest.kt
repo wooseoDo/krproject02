@@ -1,7 +1,6 @@
 package kr.krproject02.domain.survey.service
 
 import io.mockk.Runs
-import io.mockk.any
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk

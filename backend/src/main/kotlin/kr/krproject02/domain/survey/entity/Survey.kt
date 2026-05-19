@@ -36,9 +36,21 @@ open class Survey protected constructor(
     @field:Comment("조사지 UUID")
     open var surveyId: UUID? = null,
 
+    @Column(name = "survey_group_id", columnDefinition = "uuid", nullable = false)
+    @field:Comment("같은 조사지의 버전 묶음 UUID")
+    open var surveyGroupId: UUID? = null,
+
+    @Column(name = "previous_survey_id", columnDefinition = "uuid")
+    @field:Comment("이전 버전 조사지 UUID")
+    open var previousSurveyId: UUID? = null,
+
     @Column(name = "survey_version", nullable = false)
     @field:Comment("조사지 버전")
     open var surveyVersion: Int = 1,
+
+    @Column(name = "is_latest", nullable = false)
+    @field:Comment("해당 조사지 묶음의 최신 버전 여부")
+    open var latest: Boolean = true,
 
     @Column(name = "title", nullable = false, length = SurveyConstants.MAX_SURVEY_TITLE_LENGTH)
     @field:Comment("조사지 제목")
@@ -83,12 +95,20 @@ open class Survey protected constructor(
         if (surveyId == null) {
             surveyId = UuidV7Utils.generate()
         }
+        if (surveyGroupId == null) {
+            surveyGroupId = surveyId
+        }
     }
 
     fun changeStatus(status: SurveyStatus) {
         this.status = status
         lockedAt = if (status == SurveyStatus.LOCKED) DateTimeUtils.nowKorea() else null
         lockedBy = if (status == SurveyStatus.LOCKED) lockedBy else null
+        markUpdated()
+    }
+
+    fun markNotLatest() {
+        latest = false
         markUpdated()
     }
 
@@ -101,8 +121,15 @@ open class Survey protected constructor(
             maxScore: Int,
             estimatedTimeSec: Int?,
             surveySchema: String,
+            surveyGroupId: UUID? = null,
+            previousSurveyId: UUID? = null,
+            surveyVersion: Int = 1,
         ): Survey =
             Survey(
+                surveyGroupId = surveyGroupId,
+                previousSurveyId = previousSurveyId,
+                surveyVersion = surveyVersion,
+                latest = true,
                 title = title,
                 category = category,
                 description = description,

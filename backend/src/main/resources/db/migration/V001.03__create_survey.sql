@@ -1,6 +1,9 @@
 CREATE TABLE survey (
     survey_id UUID PRIMARY KEY,
+    survey_group_id UUID NOT NULL,
+    previous_survey_id UUID REFERENCES survey(survey_id),
     survey_version INT NOT NULL DEFAULT 1,
+    is_latest BOOLEAN NOT NULL DEFAULT TRUE,
     title VARCHAR(200) NOT NULL,
     category VARCHAR(100),
     description TEXT,
@@ -22,7 +25,10 @@ CREATE TABLE survey (
 
 COMMENT ON TABLE survey IS '조사지 테이블 - 조사지 기본 정보와 JSONB 원본 구조를 관리';
 COMMENT ON COLUMN survey.survey_id IS 'PK - 조사지 UUID, 애플리케이션에서 UUIDv7로 생성';
+COMMENT ON COLUMN survey.survey_group_id IS 'PK - 조사지 그룹 UUID, 애플리케이션에서 UUIDv7로 생성';
+COMMENT ON COLUMN survey.previous_survey_id IS 'PK - 이전 버전 조사지 UUID, 애플리케이션에서 UUIDv7로 생성';
 COMMENT ON COLUMN survey.survey_version IS '낙관적 락 및 변경 이력용 버전';
+COMMENT ON COLUMN survey.is_latest IS 'PK - 최신 조사지 여부';
 COMMENT ON COLUMN survey.title IS '조사지명 - 목록 조회 및 검색용 직렬화 컬럼';
 COMMENT ON COLUMN survey.category IS '조사지 카테고리 - 검색용 직렬화 컬럼';
 COMMENT ON COLUMN survey.description IS '조사지 설명';
@@ -42,6 +48,14 @@ COMMENT ON COLUMN survey.is_deleted IS '논리 삭제 여부';
 
 CREATE INDEX ix_survey_created_at
 ON survey(created_at DESC)
+WHERE is_deleted = FALSE;
+
+CREATE UNIQUE INDEX uq_survey_latest_per_group
+ON survey(survey_group_id)
+WHERE is_latest = TRUE AND is_deleted = FALSE;
+
+CREATE INDEX ix_survey_group_version
+ON survey(survey_group_id, survey_version DESC)
 WHERE is_deleted = FALSE;
 
 CREATE INDEX ix_survey_admin_list_cover

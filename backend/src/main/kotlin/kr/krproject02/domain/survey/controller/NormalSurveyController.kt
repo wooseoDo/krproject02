@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDate
 
 @RestController
-@RequestMapping("/normal/surveys", "/api/normal/surveys")
+@RequestMapping("/normal/surveys" )
 class NormalSurveyController(
     private val normalSurveyService: NormalSurveyService,
 ) : NormalSurveyApi {

@@ -33,6 +33,10 @@ open class SurveyResponse protected constructor(
     @field:Comment("응답 대상 조사지 UUID")
     open var surveyId: UUID? = null,
 
+    @Column(name = "survey_group_id", columnDefinition = "uuid", nullable = false)
+    @field:Comment("응답 당시 조사지 버전 묶음 UUID")
+    open var surveyGroupId: UUID? = null,
+
     @Column(name = "user_id", columnDefinition = "uuid", nullable = false)
     @field:Comment("응답 사용자 UUID")
     open var userId: UUID? = null,

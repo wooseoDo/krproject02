@@ -6,6 +6,8 @@ import kr.krproject02.domain.survey.dto.admin.AdminSurveyCreateRequest
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyCreateResponse
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyStatusUpdateRequest
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyStatusUpdateResponse
+import kr.krproject02.domain.survey.dto.admin.AdminSurveyUpdateRequest
+import kr.krproject02.domain.survey.dto.admin.AdminSurveyUpdateResponse
 import kr.krproject02.domain.survey.entity.Survey
 import kr.krproject02.domain.survey.entity.SurveyQuestion
 import kr.krproject02.domain.survey.entity.SurveyQuestionOption
@@ -80,6 +82,38 @@ class AdminSurveyService(
                 maxScore = request.maxScore,
                 estimatedTimeSec = request.estimatedTimeSec,
                 surveySchema = AdminSurveyMapper.toSurveySchema(request),
+            ),
+        )
+
+        saveSurveyStructure(survey, request)
+        return AdminSurveyMapper.toCreateResponse(survey)
+    }
+
+    @Transactional
+    fun updateSurvey(
+        surveyId: UUID,
+        request: AdminSurveyUpdateRequest,
+    ): AdminSurveyUpdateResponse {
+        adminSurveyValidator.validateCreateRequest(request)
+
+        val previousSurvey = surveyRepository.findBySurveyIdAndLatestTrueAndDeletedFalse(surveyId)
+            ?: throw SurveyException(SurveyErrorCode.NOT_FOUND)
+
+        previousSurvey.markNotLatest()
+        surveyRepository.flush()
+
+        val survey = surveyRepository.save(
+            Survey.create(
+                title = request.title,
+                category = request.category,
+                description = request.description,
+                status = request.status,
+                maxScore = request.maxScore,
+                estimatedTimeSec = request.estimatedTimeSec,
+                surveySchema = AdminSurveyMapper.toSurveySchema(request),
+                surveyGroupId = previousSurvey.surveyGroupId ?: previousSurvey.surveyId,
+                previousSurveyId = previousSurvey.surveyId,
+                surveyVersion = previousSurvey.surveyVersion + 1,
             ),
         )
 

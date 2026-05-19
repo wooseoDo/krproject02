@@ -84,6 +84,10 @@ export interface AdminSurveyCreateResponse {
   status: SurveyStatus;
 }
 
+export type AdminSurveyUpdateRequest = AdminSurveyCreateRequest;
+
+export type AdminSurveyUpdateResponse = AdminSurveyCreateResponse;
+
 export interface SurveyQuestionDraft {
   id: string;
   questionType: SurveyQuestionType;

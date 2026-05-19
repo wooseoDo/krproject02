@@ -9,6 +9,8 @@ import kr.krproject02.domain.survey.dto.admin.AdminSurveyCreateRequest
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyCreateResponse
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyStatusUpdateRequest
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyStatusUpdateResponse
+import kr.krproject02.domain.survey.dto.admin.AdminSurveyUpdateRequest
+import kr.krproject02.domain.survey.dto.admin.AdminSurveyUpdateResponse
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
@@ -40,6 +42,15 @@ interface AdminSurveyApi {
     fun createSurvey(
         @Valid @RequestBody request: AdminSurveyCreateRequest,
     ): AdminSurveyCreateResponse
+
+    @Operation(
+        summary = "관리자 조사지 수정",
+        description = "기존 조사지 row를 덮어쓰지 않고 새 버전을 생성합니다. 기존 버전은 최신 버전에서 제외됩니다.",
+    )
+    fun updateSurvey(
+        @PathVariable surveyId: UUID,
+        @Valid @RequestBody request: AdminSurveyUpdateRequest,
+    ): AdminSurveyUpdateResponse
 
     @Operation(
         summary = "관리자 조사지 상태 변경",
