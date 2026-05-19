@@ -156,6 +156,10 @@ class NormalSurveyService(
                 surveyVersion = existingResponse.surveyVersion,
                 surveyTitle = existingResponse.surveyTitle,
                 resumed = true,
+                completed = existingResponse.completed,
+                submittedAt = existingResponse.submittedAt,
+                elapsedTimeSec = existingResponse.elapsedTimeSec,
+                totalScore = existingResponse.totalScore,
             )
         }
 
@@ -176,6 +180,10 @@ class NormalSurveyService(
             surveyVersion = response.surveyVersion,
             surveyTitle = response.surveyTitle,
             resumed = false,
+            completed = response.completed,
+            submittedAt = response.submittedAt,
+            elapsedTimeSec = response.elapsedTimeSec,
+            totalScore = response.totalScore,
         )
     }
 

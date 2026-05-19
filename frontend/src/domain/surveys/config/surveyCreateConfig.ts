@@ -1,5 +1,6 @@
 import type {
   AdminSurveyCreateDraft,
+  AdminSurveyDetailResponse,
   SurveyQuestionDraft,
   SurveyQuestionType,
   SurveySectionDraft,
@@ -54,5 +55,35 @@ export function createInitialSurveyDraft(): AdminSurveyCreateDraft {
     maxScore: '5',
     estimatedTimeMinutes: '10',
     sections: [createSectionDraft()],
+  };
+}
+
+export function mapAdminSurveyDetailToDraft(detail: AdminSurveyDetailResponse): AdminSurveyCreateDraft {
+  return {
+    title: detail.title,
+    category: detail.category ?? '',
+    description: detail.description ?? '',
+    status: detail.status,
+    maxScore: String(detail.maxScore),
+    estimatedTimeMinutes: detail.estimatedTimeSec == null ? '' : String(Math.round(detail.estimatedTimeSec / 60)),
+    sections: detail.sections.map((section) => ({
+      id: section.sectionId ?? createSurveyDraftId(),
+      title: section.title,
+      targetAverageScore: section.targetAverageScore == null ? '' : String(section.targetAverageScore),
+      questions: section.questions.map((question) => ({
+        id: question.questionId ?? createSurveyDraftId(),
+        questionType: question.questionType,
+        title: question.title,
+        score: String(question.score),
+        optionCount: question.options.length,
+        options:
+          question.questionType === 'LIKERT'
+            ? ['', '']
+            : question.options
+                .slice()
+                .sort((left, right) => left.optionSort - right.optionSort)
+                .map((option) => option.optionLabel),
+      })),
+    })),
   };
 }

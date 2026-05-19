@@ -10,6 +10,7 @@ import kr.krproject02.domain.survey.dto.SurveyListPageResponse
 import kr.krproject02.domain.survey.dto.SurveyListQuery
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyCreateRequest
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyCreateResponse
+import kr.krproject02.domain.survey.dto.admin.AdminSurveyDetailResponse
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyStatusUpdateRequest
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyStatusUpdateResponse
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyUpdateRequest
@@ -61,6 +62,13 @@ class AdminSurveyController(
                 releasedAtTo = releasedAtTo,
             ),
         )
+
+    @GetMapping("/{surveyId}")
+    @PreAuthorize("hasAuthority('$ADMIN_SURVEY_PAGE_READ')")
+    override fun getSurveyDetail(
+        @PathVariable surveyId: UUID,
+    ): AdminSurveyDetailResponse =
+        adminSurveyService.getSurveyDetail(surveyId)
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

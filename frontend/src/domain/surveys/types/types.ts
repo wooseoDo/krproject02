@@ -88,6 +88,45 @@ export type AdminSurveyUpdateRequest = AdminSurveyCreateRequest;
 
 export type AdminSurveyUpdateResponse = AdminSurveyCreateResponse;
 
+export interface AdminSurveyDetailOptionResponse {
+  optionId: string | null;
+  optionSort: number;
+  optionLabel: string;
+  optionScore: number;
+}
+
+export interface AdminSurveyDetailQuestionResponse {
+  questionId: string | null;
+  questionSort: number;
+  questionType: SurveyQuestionType;
+  title: string;
+  score: number;
+  options: AdminSurveyDetailOptionResponse[];
+}
+
+export interface AdminSurveyDetailSectionResponse {
+  sectionId: string | null;
+  sectionSort: number;
+  title: string;
+  targetAverageScore: number | null;
+  questions: AdminSurveyDetailQuestionResponse[];
+}
+
+export interface AdminSurveyDetailResponse {
+  surveyId: string | null;
+  surveyGroupId: string | null;
+  previousSurveyId: string | null;
+  surveyVersion: number;
+  latest: boolean;
+  title: string;
+  category: string | null;
+  description: string | null;
+  status: SurveyStatus;
+  maxScore: number;
+  estimatedTimeSec: number | null;
+  sections: AdminSurveyDetailSectionResponse[];
+}
+
 export interface SurveyQuestionDraft {
   id: string;
   questionType: SurveyQuestionType;
@@ -160,6 +199,10 @@ export interface NormalSurveyParticipationStartResponse {
   surveyVersion: number;
   surveyTitle: string;
   resumed: boolean;
+  completed: boolean;
+  submittedAt: string | null;
+  elapsedTimeSec: number | null;
+  totalScore: number | null;
 }
 
 export interface NormalSurveySubmitAnswerRequest {

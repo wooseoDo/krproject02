@@ -7,6 +7,7 @@ import kr.krproject02.domain.survey.constants.SurveyStatus
 import kr.krproject02.domain.survey.dto.SurveyListPageResponse
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyCreateRequest
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyCreateResponse
+import kr.krproject02.domain.survey.dto.admin.AdminSurveyDetailResponse
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyStatusUpdateRequest
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyStatusUpdateResponse
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyUpdateRequest
@@ -34,6 +35,14 @@ interface AdminSurveyApi {
         @RequestParam(required = false) releasedAtFrom: LocalDate?,
         @RequestParam(required = false) releasedAtTo: LocalDate?,
     ): SurveyListPageResponse
+
+    @Operation(
+        summary = "관리자 조사지 상세 조회",
+        description = "관리자 수정 화면에서 사용할 조사지 기본 정보, 항목, 문항, 선택지 구조를 조회합니다.",
+    )
+    fun getSurveyDetail(
+        @PathVariable surveyId: UUID,
+    ): AdminSurveyDetailResponse
 
     @Operation(
         summary = "관리자 조사지 생성",

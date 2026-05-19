@@ -22,6 +22,10 @@ interface SurveyCreateFormProps {
   onCancel: () => void;
   onOpenReview: () => void;
   onClearSubmitMessage: () => void;
+  sectionLabel?: string;
+  title?: string;
+  cancelLabel?: string;
+  reviewButtonLabel?: string;
 }
 
 type SurveyDraftField = Exclude<keyof AdminSurveyCreateDraft, 'sections'>;
@@ -58,6 +62,10 @@ export function SurveyCreateForm({
   onCancel,
   onOpenReview,
   onClearSubmitMessage,
+  sectionLabel = 'CREATE',
+  title = '신규 조사지 생성',
+  cancelLabel = '닫기',
+  reviewButtonLabel = '최종 확인',
 }: SurveyCreateFormProps) {
   const totalScore = getQuestionScoreTotal(draft);
   const maxScore = Number(draft.maxScore || 0);
@@ -69,6 +77,7 @@ export function SurveyCreateForm({
 
   const updateSection = (sectionId: string, key: SurveySectionTextField, value: string) => {
     setDraft((current) => replaceSection(current, sectionId, (section) => ({ ...section, [key]: value })));
+    onClearSubmitMessage();
   };
 
   const updateQuestion = <TKey extends SurveyQuestionEditableField>(
@@ -82,10 +91,12 @@ export function SurveyCreateForm({
         replaceQuestion(section, questionId, (question) => ({ ...question, [key]: value })),
       ),
     );
+    onClearSubmitMessage();
   };
 
   const addSection = () => {
     setDraft((current) => ({ ...current, sections: [...current.sections, createSectionDraft()] }));
+    onClearSubmitMessage();
   };
 
   const removeSection = (sectionId: string) => {
@@ -93,6 +104,7 @@ export function SurveyCreateForm({
       ...current,
       sections: current.sections.length <= 1 ? current.sections : current.sections.filter((section) => section.id !== sectionId),
     }));
+    onClearSubmitMessage();
   };
 
   const addQuestion = (sectionId: string) => {
@@ -102,6 +114,7 @@ export function SurveyCreateForm({
         questions: [...section.questions, createQuestionDraft()],
       })),
     );
+    onClearSubmitMessage();
   };
 
   const removeQuestion = (sectionId: string, questionId: string) => {
@@ -114,9 +127,10 @@ export function SurveyCreateForm({
             : section.questions.filter((question) => question.id !== questionId),
       })),
     );
+    onClearSubmitMessage();
   };
 
-  const addMultipleChoiceOption = (sectionId: string, questionId: string) => {
+  const addSingleChoiceOption = (sectionId: string, questionId: string) => {
     setDraft((current) =>
       replaceSection(current, sectionId, (section) =>
         replaceQuestion(section, questionId, (question) => ({
@@ -125,9 +139,10 @@ export function SurveyCreateForm({
         })),
       ),
     );
+    onClearSubmitMessage();
   };
 
-  const updateMultipleChoiceOption = (sectionId: string, questionId: string, optionIndex: number, value: string) => {
+  const updateSingleChoiceOption = (sectionId: string, questionId: string, optionIndex: number, value: string) => {
     setDraft((current) =>
       replaceSection(current, sectionId, (section) =>
         replaceQuestion(section, questionId, (question) => ({
@@ -136,9 +151,10 @@ export function SurveyCreateForm({
         })),
       ),
     );
+    onClearSubmitMessage();
   };
 
-  const removeMultipleChoiceOption = (sectionId: string, questionId: string, optionIndex: number) => {
+  const removeSingleChoiceOption = (sectionId: string, questionId: string, optionIndex: number) => {
     setDraft((current) =>
       replaceSection(current, sectionId, (section) =>
         replaceQuestion(section, questionId, (question) => ({
@@ -147,17 +163,18 @@ export function SurveyCreateForm({
         })),
       ),
     );
+    onClearSubmitMessage();
   };
 
   return (
     <>
       <div className="survey-create-panel__header">
         <div>
-          <p className="section-label">CREATE</p>
-          <h2>신규 조사지 생성</h2>
+          <p className="section-label">{sectionLabel}</p>
+          <h2>{title}</h2>
         </div>
         <button type="button" className="secondary-action" onClick={onCancel}>
-          닫기
+          {cancelLabel}
         </button>
       </div>
 
@@ -212,7 +229,7 @@ export function SurveyCreateForm({
           설명
           <textarea
             value={draft.description}
-            placeholder="조사지 설명을 입력해 주세요."
+            placeholder="조사지 설명을 입력해 주세요"
             onChange={(event) => updateDraftField('description', event.target.value)}
           />
         </label>
@@ -297,7 +314,7 @@ export function SurveyCreateForm({
                       문제명
                       <input
                         value={question.title}
-                        placeholder="예: 최근 2주 동안 업무량이 부담스럽다고 느꼈다."
+                        placeholder="예: 최근 2주 동안 업무량이 부담스럽다고 느낀 적이 있다."
                         onChange={(event) => updateQuestion(section.id, question.id, 'title', event.target.value)}
                       />
                     </label>
@@ -333,7 +350,7 @@ export function SurveyCreateForm({
                     <div className="survey-options-editor">
                       <div className="survey-options-editor__toolbar">
                         <strong>객관식 옵션</strong>
-                        <button type="button" onClick={() => addMultipleChoiceOption(section.id, question.id)}>
+                        <button type="button" onClick={() => addSingleChoiceOption(section.id, question.id)}>
                           + 옵션
                         </button>
                       </div>
@@ -344,12 +361,12 @@ export function SurveyCreateForm({
                             value={option}
                             placeholder={`옵션 ${optionIndex + 1}`}
                             onChange={(event) =>
-                              updateMultipleChoiceOption(section.id, question.id, optionIndex, event.target.value)
+                              updateSingleChoiceOption(section.id, question.id, optionIndex, event.target.value)
                             }
                           />
                           <button
                             type="button"
-                            onClick={() => removeMultipleChoiceOption(section.id, question.id, optionIndex)}
+                            onClick={() => removeSingleChoiceOption(section.id, question.id, optionIndex)}
                           >
                             삭제
                           </button>
@@ -380,7 +397,7 @@ export function SurveyCreateForm({
 
       <div className="survey-create-actions">
         <button type="button" className="primary-action" onClick={onOpenReview}>
-          최종 확인
+          {reviewButtonLabel}
         </button>
       </div>
     </>

@@ -1,8 +1,13 @@
 import { api } from '../../../../common/api/client/apiClient';
-import { adminSurveyCreateResponseSchema, surveyListPageResponseSchema } from '../../types/schemas';
+import {
+  adminSurveyCreateResponseSchema,
+  adminSurveyDetailResponseSchema,
+  surveyListPageResponseSchema,
+} from '../../types/schemas';
 import type {
   AdminSurveyCreateRequest,
   AdminSurveyCreateResponse,
+  AdminSurveyDetailResponse,
   AdminSurveyUpdateRequest,
   AdminSurveyUpdateResponse,
   SurveyListPageResponse,
@@ -36,6 +41,11 @@ export async function fetchAdminSurveys(params: SurveyListQueryParams): Promise<
 export async function createAdminSurvey(payload: AdminSurveyCreateRequest): Promise<AdminSurveyCreateResponse> {
   const response = await api.post<unknown, AdminSurveyCreateRequest>(SURVEY_API_URLS.ADMIN.BASE, payload);
   return adminSurveyCreateResponseSchema.parse(response.data);
+}
+
+export async function fetchAdminSurveyDetail(surveyId: string): Promise<AdminSurveyDetailResponse> {
+  const response = await api.get<unknown>(SURVEY_API_URLS.ADMIN.DETAIL(surveyId));
+  return adminSurveyDetailResponseSchema.parse(response.data);
 }
 
 export async function updateAdminSurvey(

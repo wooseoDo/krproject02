@@ -4,6 +4,10 @@ import kr.krproject02.domain.survey.dto.SurveyListPageResponse
 import kr.krproject02.domain.survey.dto.SurveyListQuery
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyCreateRequest
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyCreateResponse
+import kr.krproject02.domain.survey.dto.admin.AdminSurveyDetailOptionResponse
+import kr.krproject02.domain.survey.dto.admin.AdminSurveyDetailQuestionResponse
+import kr.krproject02.domain.survey.dto.admin.AdminSurveyDetailResponse
+import kr.krproject02.domain.survey.dto.admin.AdminSurveyDetailSectionResponse
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyStatusUpdateRequest
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyStatusUpdateResponse
 import kr.krproject02.domain.survey.dto.admin.AdminSurveyUpdateRequest
@@ -66,6 +70,62 @@ class AdminSurveyService(
             size = query.safeSize,
             totalItems = totalItems,
             totalPages = ((totalItems + query.safeSize - 1) / query.safeSize).toInt().coerceAtLeast(1),
+        )
+    }
+
+    @Transactional(readOnly = true)
+    fun getSurveyDetail(surveyId: UUID): AdminSurveyDetailResponse {
+        val survey = surveyRepository.findBySurveyIdAndDeletedFalse(surveyId)
+            ?: throw SurveyException(SurveyErrorCode.NOT_FOUND)
+        val savedSurveyId = survey.surveyId ?: throw SurveyException(SurveyErrorCode.NOT_FOUND)
+        val sections = surveySectionRepository.findBySurveySurveyIdOrderBySectionSortAsc(savedSurveyId)
+        val questions = surveyQuestionRepository.findBySurveySurveyIdOrderByQuestionSortAsc(savedSurveyId)
+        val questionIds = questions.mapNotNull { question -> question.questionId }
+        val options = if (questionIds.isEmpty()) {
+            emptyList()
+        } else {
+            surveyQuestionOptionRepository.findByQuestionQuestionIdInOrderByOptionSortAsc(questionIds)
+        }
+        val optionsByQuestionId = options.groupBy { option -> option.question.questionId }
+        val questionsBySectionId = questions.groupBy { question -> question.section.sectionId }
+
+        return AdminSurveyDetailResponse(
+            surveyId = survey.surveyId,
+            surveyGroupId = survey.surveyGroupId,
+            previousSurveyId = survey.previousSurveyId,
+            surveyVersion = survey.surveyVersion,
+            latest = survey.latest,
+            title = survey.title,
+            category = survey.category,
+            description = survey.description,
+            status = survey.status,
+            maxScore = survey.maxScore,
+            estimatedTimeSec = survey.estimatedTimeSec,
+            sections = sections.map { section ->
+                AdminSurveyDetailSectionResponse(
+                    sectionId = section.sectionId,
+                    sectionSort = section.sectionSort,
+                    title = section.title,
+                    targetAverageScore = section.targetAverageScore,
+                    questions = questionsBySectionId[section.sectionId].orEmpty().map { question ->
+                        AdminSurveyDetailQuestionResponse(
+                            questionId = question.questionId,
+                            questionSort = question.questionSort,
+                            questionType = question.questionType,
+                            title = question.title,
+                            score = question.score,
+                            options = optionsByQuestionId[question.questionId].orEmpty().map { option ->
+                                AdminSurveyDetailOptionResponse(
+                                    optionId = option.optionId,
+                                    optionSort = option.optionSort,
+                                    optionLabel = option.optionLabel,
+                                    optionScore = option.optionScore,
+                                )
+                            },
+                        )
+                    },
+                )
+            },
         )
     }
 

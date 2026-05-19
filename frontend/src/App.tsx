@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import './App.css';
+import AdminSurveyEditPage from './domain/surveys/pages/admin/AdminSurveyEditPage';
 import AdminSurveyListPage from './domain/surveys/pages/admin/AdminSurveyListPage';
 import SurveyParticipationPage from './domain/surveys/pages/normal/SurveyParticipationPage';
 import SurveyListPage from './domain/surveys/pages/normal/SurveyListPage';
@@ -81,6 +82,11 @@ function App() {
   if (path === '/admin/surveys') {
     const user = readAuthenticatedUser();
     return user?.scope === 'admin' ? <AdminSurveyListPage /> : <AdminLoginPage />;
+  }
+
+  if (/^\/admin\/surveys\/[^/]+\/edit$/.test(path)) {
+    const user = readAuthenticatedUser();
+    return user?.scope === 'admin' ? <AdminSurveyEditPage /> : <AdminLoginPage />;
   }
 
   if (path.startsWith('/api/')) {

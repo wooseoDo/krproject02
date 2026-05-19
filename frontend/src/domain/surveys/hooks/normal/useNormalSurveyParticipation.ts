@@ -9,6 +9,7 @@ import {
   flattenParticipationQuestionIds,
   isParticipationComplete,
 } from '../../model/participationPayload';
+import { SURVEY_MESSAGES } from '../../constants/messages';
 import type {
   NormalSurveyParticipationDetailResponse,
   NormalSurveySubmitResponse,
@@ -28,6 +29,7 @@ export function useNormalSurveyParticipation({ surveyId, userId }: UseNormalSurv
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [submitResult, setSubmitResult] = useState<NormalSurveySubmitResponse | null>(null);
+  const [alreadySubmittedResult, setAlreadySubmittedResult] = useState<NormalSurveySubmitResponse | null>(null);
   const draftStore = useSurveyParticipationDraft();
   const elapsedTimeSec = useSurveyTimer(draftStore.draft?.startedAt ?? null);
 
@@ -37,10 +39,31 @@ export function useNormalSurveyParticipation({ surveyId, userId }: UseNormalSurv
     async function loadParticipation() {
       setIsLoading(true);
       setError('');
+      setSubmitResult(null);
+      setAlreadySubmittedResult(null);
 
       try {
         const nextDetail = await fetchNormalSurveyParticipationDetail(surveyId);
         const startResponse = await startNormalSurveyParticipation(surveyId, { userId });
+
+        if (startResponse.completed) {
+          if (mounted) {
+            draftStore.clearDraft();
+            setDetail(nextDetail);
+            setAlreadySubmittedResult({
+              responseId: startResponse.responseId,
+              surveyId: startResponse.surveyId,
+              surveyGroupId: startResponse.surveyGroupId,
+              surveyVersion: startResponse.surveyVersion,
+              completed: startResponse.completed,
+              submittedAt: startResponse.submittedAt,
+              elapsedTimeSec: startResponse.elapsedTimeSec,
+              totalScore: startResponse.totalScore,
+            });
+          }
+
+          return;
+        }
 
         if (!startResponse.responseId || !startResponse.surveyId || !startResponse.surveyGroupId) {
           throw new Error('INVALID_START_RESPONSE');
@@ -62,7 +85,7 @@ export function useNormalSurveyParticipation({ surveyId, userId }: UseNormalSurv
         }
       } catch {
         if (mounted) {
-          setError('참여 정보를 불러오지 못했습니다.');
+          setError(SURVEY_MESSAGES.PARTICIPATION_LOAD_ERROR);
         }
       } finally {
         if (mounted) {
@@ -100,7 +123,7 @@ export function useNormalSurveyParticipation({ surveyId, userId }: UseNormalSurv
       draftStore.clearDraft();
       setSubmitResult(response);
     } catch {
-      setError('조사지를 제출하지 못했습니다.');
+      setError(SURVEY_MESSAGES.PARTICIPATION_SUBMIT_ERROR);
     } finally {
       setIsSubmitting(false);
     }
@@ -125,6 +148,7 @@ export function useNormalSurveyParticipation({ surveyId, userId }: UseNormalSurv
     isSubmitting,
     error,
     submitResult,
+    alreadySubmittedResult,
     updateAnswer,
     submit,
   };

@@ -30,6 +30,45 @@ export const adminSurveyCreateResponseSchema = z.object({
   status: surveyStatusSchema,
 });
 
+const adminSurveyDetailOptionSchema = z.object({
+  optionId: z.string().uuid().nullable(),
+  optionSort: z.number().int().positive(),
+  optionLabel: z.string(),
+  optionScore: z.number().int().nonnegative(),
+});
+
+const adminSurveyDetailQuestionSchema = z.object({
+  questionId: z.string().uuid().nullable(),
+  questionSort: z.number().int().positive(),
+  questionType: surveyQuestionTypeSchema,
+  title: z.string(),
+  score: z.number().int().positive(),
+  options: z.array(adminSurveyDetailOptionSchema),
+});
+
+const adminSurveyDetailSectionSchema = z.object({
+  sectionId: z.string().uuid().nullable(),
+  sectionSort: z.number().int().positive(),
+  title: z.string(),
+  targetAverageScore: z.number().nullable(),
+  questions: z.array(adminSurveyDetailQuestionSchema),
+});
+
+export const adminSurveyDetailResponseSchema = z.object({
+  surveyId: z.string().uuid().nullable(),
+  surveyGroupId: z.string().uuid().nullable(),
+  previousSurveyId: z.string().uuid().nullable(),
+  surveyVersion: z.number().int().nonnegative(),
+  latest: z.boolean(),
+  title: z.string(),
+  category: z.string().nullable(),
+  description: z.string().nullable(),
+  status: surveyStatusSchema,
+  maxScore: z.number().int().nonnegative(),
+  estimatedTimeSec: z.number().int().nonnegative().nullable(),
+  sections: z.array(adminSurveyDetailSectionSchema),
+});
+
 const normalSurveyParticipationOptionSchema = z.object({
   optionId: z.string().uuid().nullable(),
   optionSort: z.number().int().positive(),
@@ -72,6 +111,10 @@ export const normalSurveyParticipationStartResponseSchema = z.object({
   surveyVersion: z.number().int().nonnegative(),
   surveyTitle: z.string(),
   resumed: z.boolean(),
+  completed: z.boolean(),
+  submittedAt: z.string().nullable(),
+  elapsedTimeSec: z.number().int().nonnegative().nullable(),
+  totalScore: z.number().nullable(),
 });
 
 export const normalSurveySubmitResponseSchema = z.object({

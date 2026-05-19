@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AuthHeader } from '../../../../common/components/layout/AuthHeader';
 import { clearAuthenticatedUser, readAuthenticatedUser } from '../../../users/model/authSession';
+import { SURVEY_MESSAGES } from '../../constants/messages';
 import { useNormalSurveyParticipation } from '../../hooks/normal/useNormalSurveyParticipation';
 import { SurveyProgressBar } from './SurveyProgressBar';
 import { SurveyQuestionPanel } from './SurveyQuestionPanel';
@@ -48,6 +49,38 @@ function NormalSurveyParticipationContent({ surveyId, userId }: NormalSurveyPart
   if (!user) {
     navigateTo('/login');
     return null;
+  }
+
+  if (participation.alreadySubmittedResult) {
+    return (
+      <main className="survey-page-shell">
+        <AuthHeader
+          accountType="일반 사용자"
+          birthDate={user.birthDate}
+          accountInfo={user.createdAt ? new Date(user.createdAt).toLocaleDateString('ko-KR') : '-'}
+          dashboardPath="/dashboard"
+          surveyPath="/surveys"
+          onLogout={handleLogout}
+        />
+        <section className="survey-complete-panel">
+          <p className="section-label">SUBMITTED</p>
+          <h1>{SURVEY_MESSAGES.PARTICIPATION_ALREADY_SUBMITTED}</h1>
+          <dl>
+            <div>
+              <dt>총점</dt>
+              <dd>{participation.alreadySubmittedResult.totalScore ?? 0}</dd>
+            </div>
+            <div>
+              <dt>소요 시간</dt>
+              <dd>{participation.alreadySubmittedResult.elapsedTimeSec ?? 0}초</dd>
+            </div>
+          </dl>
+          <button type="button" className="primary-action" onClick={() => navigateTo('/surveys')}>
+            목록으로
+          </button>
+        </section>
+      </main>
+    );
   }
 
   if (participation.submitResult) {
