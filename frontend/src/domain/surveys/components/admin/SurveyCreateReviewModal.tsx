@@ -1,6 +1,6 @@
 import { SURVEY_STATUS_OPTIONS } from '../../config/surveyCreateConfig';
 import { buildLikertOptionLabels } from '../../model/createPayload';
-import type { AdminSurveyCreateDraft } from '../../types/types';
+import type { AdminSurveyCreateDraft, SurveyQuestionDraft } from '../../types/types';
 
 interface SurveyCreateReviewModalProps {
   draft: AdminSurveyCreateDraft;
@@ -9,6 +9,12 @@ interface SurveyCreateReviewModalProps {
   onClose: () => void;
   onMoveSection: (nextIndex: number) => void;
   onComplete: () => void;
+}
+
+function getReviewOptions(question: SurveyQuestionDraft) {
+  return question.questionType === 'LIKERT'
+    ? buildLikertOptionLabels(question.optionCount)
+    : question.options.slice(0, 5).filter((option) => option.trim() !== '');
 }
 
 export function SurveyCreateReviewModal({
@@ -40,7 +46,7 @@ export function SurveyCreateReviewModal({
 
         <div className="survey-review-summary">
           <span>상태 {SURVEY_STATUS_OPTIONS.find((status) => status.value === draft.status)?.label}</span>
-          <span>최대 {draft.maxScore}점</span>
+          <span>최고 {draft.maxScore}점</span>
           <span>예상 {draft.estimatedTimeMinutes}분</span>
         </div>
 
@@ -53,12 +59,24 @@ export function SurveyCreateReviewModal({
               <strong>
                 {questionIndex + 1}. {question.title} ({question.score}점)
               </strong>
-              <ul>
-                {(question.questionType === 'LIKERT' ? buildLikertOptionLabels(question.optionCount) : question.options).map(
-                  (option) => (
-                    <li key={option}>{option}</li>
-                  ),
-                )}
+              <ul className={question.questionType === 'LIKERT' ? 'survey-review-options is-likert' : 'survey-review-options'}>
+                {getReviewOptions(question).map((option, optionIndex) => (
+                  <li key={`${question.id}-${optionIndex}`}>
+                    {question.questionType === 'LIKERT' ? (
+                      <label className="survey-review-option-radio">
+                        <input type="radio" name={`${question.id}-review`} disabled />
+                        <span>
+                          {optionIndex + 1}. {option}
+                        </span>
+                      </label>
+                    ) : (
+                      <span className="survey-review-option-choice">
+                        <strong>{optionIndex + 1}번</strong>
+                        <span>{option}</span>
+                      </span>
+                    )}
+                  </li>
+                ))}
               </ul>
             </div>
           ))}

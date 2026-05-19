@@ -121,7 +121,7 @@ export function SurveyCreateForm({
       replaceSection(current, sectionId, (section) =>
         replaceQuestion(section, questionId, (question) => ({
           ...question,
-          options: question.options.length >= 5 ? question.options : [...question.options, `옵션 ${question.options.length + 1}`],
+          options: question.options.length >= 5 ? question.options : [...question.options, ''],
         })),
       ),
     );
@@ -163,15 +163,20 @@ export function SurveyCreateForm({
 
       <div className="survey-create-grid">
         <label className="field-group">
-          조사지 타이틀
-          <input value={draft.title} onChange={(event) => updateDraftField('title', event.target.value)} />
+          조사지 제목
+          <input
+            value={draft.title}
+            placeholder="예: 직무 스트레스 자가진단 조사지"
+            onChange={(event) => updateDraftField('title', event.target.value)}
+          />
         </label>
         <label className="field-group">
-          최대 점수
+          최고 점수
           <input
             type="number"
             min="1"
             value={draft.maxScore}
+            placeholder="예: 30"
             onChange={(event) => updateDraftField('maxScore', event.target.value)}
           />
         </label>
@@ -181,6 +186,7 @@ export function SurveyCreateForm({
             type="number"
             min="1"
             value={draft.estimatedTimeMinutes}
+            placeholder="예: 10"
             onChange={(event) => updateDraftField('estimatedTimeMinutes', event.target.value)}
           />
         </label>
@@ -196,17 +202,25 @@ export function SurveyCreateForm({
         </label>
         <label className="field-group">
           카테고리
-          <input value={draft.category} onChange={(event) => updateDraftField('category', event.target.value)} />
+          <input
+            value={draft.category}
+            placeholder="예: 심리/직무"
+            onChange={(event) => updateDraftField('category', event.target.value)}
+          />
         </label>
         <label className="field-group survey-create-grid__wide">
           설명
-          <textarea value={draft.description} onChange={(event) => updateDraftField('description', event.target.value)} />
+          <textarea
+            value={draft.description}
+            placeholder="조사지 설명을 입력해 주세요."
+            onChange={(event) => updateDraftField('description', event.target.value)}
+          />
         </label>
       </div>
 
       <div className={`survey-score-meter ${totalScore === maxScore ? 'is-valid' : 'is-invalid'}`}>
         <span>문항 배점 합계 {totalScore}점</span>
-        <strong>최대 점수 {Number.isFinite(maxScore) ? maxScore : 0}점</strong>
+        <strong>최고 점수 {Number.isFinite(maxScore) ? maxScore : 0}점</strong>
       </div>
 
       <div className="survey-section-builder">
@@ -222,7 +236,11 @@ export function SurveyCreateForm({
             <div className="survey-section-editor__header">
               <label className="field-group">
                 {sectionIndex + 1}번 항목 이름
-                <input value={section.title} onChange={(event) => updateSection(section.id, 'title', event.target.value)} />
+                <input
+                  value={section.title}
+                  placeholder="예: 업무 부담"
+                  onChange={(event) => updateSection(section.id, 'title', event.target.value)}
+                />
               </label>
               <label className="field-group">
                 목표 평균 점수
@@ -230,6 +248,7 @@ export function SurveyCreateForm({
                   type="number"
                   step="0.1"
                   value={section.targetAverageScore}
+                  placeholder="예: 7.0"
                   onChange={(event) => updateSection(section.id, 'targetAverageScore', event.target.value)}
                 />
               </label>
@@ -250,7 +269,7 @@ export function SurveyCreateForm({
 
                   <div className="survey-question-editor__fields">
                     <label className="field-group">
-                      문제 타입
+                      문제 유형
                       <select
                         value={question.questionType}
                         onChange={(event) =>
@@ -270,6 +289,7 @@ export function SurveyCreateForm({
                         type="number"
                         min="1"
                         value={question.score}
+                        placeholder="예: 5"
                         onChange={(event) => updateQuestion(section.id, question.id, 'score', event.target.value)}
                       />
                     </label>
@@ -277,6 +297,7 @@ export function SurveyCreateForm({
                       문제명
                       <input
                         value={question.title}
+                        placeholder="예: 최근 2주 동안 업무량이 부담스럽다고 느꼈다."
                         onChange={(event) => updateQuestion(section.id, question.id, 'title', event.target.value)}
                       />
                     </label>
@@ -298,8 +319,13 @@ export function SurveyCreateForm({
                         </select>
                       </label>
                       <div className="survey-option-preview">
-                        {buildLikertOptionLabels(question.optionCount).map((label) => (
-                          <span key={label}>{label}</span>
+                        {buildLikertOptionLabels(question.optionCount).map((label, optionIndex) => (
+                          <label className="survey-option-preview__radio" key={label}>
+                            <input type="radio" name={`${question.id}-likert-preview`} disabled />
+                            <span>
+                              {optionIndex + 1}. {label}
+                            </span>
+                          </label>
                         ))}
                       </div>
                     </div>
@@ -313,9 +339,10 @@ export function SurveyCreateForm({
                       </div>
                       {question.options.map((option, optionIndex) => (
                         <label className="field-group survey-option-row" key={`${question.id}-${optionIndex}`}>
-                          옵션 {optionIndex + 1}
+                          <span className="survey-option-row__number">{optionIndex + 1}번</span>
                           <input
                             value={option}
+                            placeholder={`옵션 ${optionIndex + 1}`}
                             onChange={(event) =>
                               updateMultipleChoiceOption(section.id, question.id, optionIndex, event.target.value)
                             }

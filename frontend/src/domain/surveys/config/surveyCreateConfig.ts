@@ -32,7 +32,7 @@ export function createQuestionDraft(questionType: SurveyQuestionType = 'LIKERT')
     title: '',
     score: '1',
     optionCount: 5,
-    options: ['옵션 1', '옵션 2'],
+    options: ['', ''],
   };
 }
 

@@ -23,7 +23,7 @@ function validDraft() {
         title: `문항 ${index + 1}`,
         score: '1',
         optionCount: 5,
-        options: ['옵션 1', '옵션 2'],
+        options: ['', ''],
       })),
     },
   ];
@@ -32,10 +32,10 @@ function validDraft() {
 
 describe('survey create model', () => {
   it('builds likert labels by option count', () => {
-    expect(buildLikertOptionLabels(5)).toEqual(['매우 싫다', '싫다', '보통이다', '좋다', '매우 좋다']);
-    expect(buildLikertOptionLabels(4)).toEqual(['매우 싫다', '싫다', '좋다', '매우 좋다']);
-    expect(buildLikertOptionLabels(3)).toEqual(['매우 싫다', '보통이다', '매우 좋다']);
-    expect(buildLikertOptionLabels(2)).toEqual(['매우 싫다', '매우 좋다']);
+    expect(buildLikertOptionLabels(5)).toEqual(['매우 아니다', '아니다', '보통이다', '그렇다', '매우 그렇다']);
+    expect(buildLikertOptionLabels(4)).toEqual(['매우 아니다', '아니다', '그렇다', '매우 그렇다']);
+    expect(buildLikertOptionLabels(3)).toEqual(['매우 아니다', '보통이다', '매우 그렇다']);
+    expect(buildLikertOptionLabels(2)).toEqual(['매우 아니다', '매우 그렇다']);
   });
 
   it('validates that question scores match the max score', () => {
@@ -45,7 +45,7 @@ describe('survey create model', () => {
     expect(validateSurveyCreateDraft(draft)).toEqual([]);
 
     draft.maxScore = '6';
-    expect(validateSurveyCreateDraft(draft)).toContain('문항 배점 합계 5점이 최대 점수 6점과 같아야 합니다.');
+    expect(validateSurveyCreateDraft(draft)).toContain('문항 배점 합계 5점이 최고 점수 6점과 같아야 합니다.');
   });
 
   it('maps draft values to the backend create request', () => {
@@ -58,11 +58,11 @@ describe('survey create model', () => {
       estimatedTimeSec: 600,
     });
     expect(request.sections[0].questions[0].options).toEqual([
-      { optionLabel: '매우 싫다', optionScore: 1 },
-      { optionLabel: '싫다', optionScore: 2 },
+      { optionLabel: '매우 아니다', optionScore: 1 },
+      { optionLabel: '아니다', optionScore: 2 },
       { optionLabel: '보통이다', optionScore: 3 },
-      { optionLabel: '좋다', optionScore: 4 },
-      { optionLabel: '매우 좋다', optionScore: 5 },
+      { optionLabel: '그렇다', optionScore: 4 },
+      { optionLabel: '매우 그렇다', optionScore: 5 },
     ]);
   });
 });

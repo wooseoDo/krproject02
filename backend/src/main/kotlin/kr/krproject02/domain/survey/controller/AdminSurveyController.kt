@@ -31,7 +31,7 @@ import java.time.LocalDate
 import java.util.UUID
 
 @RestController
-@RequestMapping("/admin/surveys")
+@RequestMapping(value = ["/admin/surveys", "/api/admin/surveys"])
 class AdminSurveyController(
     private val adminSurveyService: AdminSurveyService,
 ) : AdminSurveyApi {

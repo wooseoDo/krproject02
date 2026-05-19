@@ -7,18 +7,18 @@ import type {
 
 export function buildLikertOptionLabels(optionCount: number) {
   if (optionCount === 2) {
-    return ['매우 싫다', '매우 좋다'];
+    return ['매우 아니다', '매우 그렇다'];
   }
 
   if (optionCount === 3) {
-    return ['매우 싫다', '보통이다', '매우 좋다'];
+    return ['매우 아니다', '보통이다', '매우 그렇다'];
   }
 
   if (optionCount === 4) {
-    return ['매우 싫다', '싫다', '좋다', '매우 좋다'];
+    return ['매우 아니다', '아니다', '그렇다', '매우 그렇다'];
   }
 
-  return ['매우 싫다', '싫다', '보통이다', '좋다', '매우 좋다'];
+  return ['매우 아니다', '아니다', '보통이다', '그렇다', '매우 그렇다'];
 }
 
 export function getQuestionScoreTotal(draft: AdminSurveyCreateDraft) {
@@ -50,11 +50,11 @@ export function validateSurveyCreateDraft(draft: AdminSurveyCreateDraft): string
   const totalScore = getQuestionScoreTotal(draft);
 
   if (draft.title.trim() === '') {
-    errors.push('조사지 타이틀을 입력해 주세요.');
+    errors.push('조사지 제목을 입력해 주세요.');
   }
 
   if (!Number.isInteger(maxScore) || maxScore < 1) {
-    errors.push('최대 점수는 1점 이상 정수로 입력해 주세요.');
+    errors.push('최고 점수는 1 이상의 정수로 입력해 주세요.');
   }
 
   if (!Number.isFinite(estimatedTimeMinutes) || estimatedTimeMinutes <= 0) {
@@ -70,7 +70,7 @@ export function validateSurveyCreateDraft(draft: AdminSurveyCreateDraft): string
   }
 
   if (maxScore !== totalScore) {
-    errors.push(`문항 배점 합계 ${totalScore}점이 최대 점수 ${maxScore}점과 같아야 합니다.`);
+    errors.push(`문항 배점 합계 ${totalScore}점이 최고 점수 ${maxScore}점과 같아야 합니다.`);
   }
 
   draft.sections.forEach((section, sectionIndex) => {
